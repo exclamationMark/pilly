@@ -1,0 +1,114 @@
+html {
+	font-family: 'Roboto', sans-serif;
+	background-color: #F7FFFF;
+	font-weight: 300;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #054444;
+}
+
+li a{
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+    padding: 14px 16px;
+    font-size: 36pt;
+	color: #F7FFFF;
+	font-weight: 400;
+}
+
+.navbar-right {
+	float: right;
+	padding-right: 30px;
+}
+
+.label1 {
+	font-size: 52pt;
+	color: #054444;
+	text-align: center;
+	padding: 70px 0 20px 0;
+}
+
+.label2 {
+	font-size: 52pt;
+	color: #054444;
+	text-align: center;
+	padding: 20px 0 70px 0;
+}
+
+.countdown {
+	font-size: 42pt;
+	color: #054444;
+	text-align: center;
+	padding: 20px 0 20px 0;
+}
+
+.redcnt {
+	font-size: 42pt;
+	color: red;
+	font-weight: 700;
+	text-align: center;
+	padding: 20px 0 20px 0;
+}
+
+.label3 {
+	font-size: 40pt;
+	color: #054444;
+	text-align: left;
+	padding: 10px 40px 10px 0;
+}
+
+.spacer {
+	margin: 20px 0 20px 0;
+}
+
+.pillnumber {
+	font-size: 200pt;
+	color: #054444;
+	text-align: center;
+	padding: 0;
+	font-weight: 100;
+}
+
+table {
+	border-collapse: collapse;
+	font-size: 40pt;
+	color: #054444;
+	width: 100%;
+	text-align: center;
+	margin: 0;
+}
+
+td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 0;
+}
+
+tr {
+	background-color: white;
+	margin: 0;
+}
+
+tr:nth-child(even) {
+	background-color: #A1BABA;
+}
+
+.events {
+	display: inline-block;
+	float: left;
+	text-align: center;
+	text-decoration: none;
+    padding: 14px 50px;
+    font-size: 36pt;
+	color: #F7FFFF;
+	font-weight: 400;
+	background-color: #054444;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}

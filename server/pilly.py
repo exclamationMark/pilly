@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import render_template, redirect, request, url_for
 import json
 from datetime import datetime, timedelta
 import time, threading
@@ -28,14 +29,13 @@ def getLastEntry(pb):
 
 def scanHistory(p):
 	dump = []
-	for h in p['history']:
+	for h in p['history'][-6:]:
 		t = datetime.strptime(h['date'], "%Y-%m-%d %H:%M:%S")
 		entry = [];
-		entry.append(int(time.mktime(t.timetuple())))
-		entry.append(float(h['weight']))
-		entry.append(int(round(float(h['weight']) / float(p['pillweight']))))
+		entry.append(str(int(   (datetime.now() - t).total_seconds() / 60)) + ' minutes ago')
+		entry.append(float(h['count']))
 		dump.append( entry )
-	events = sorted(dump)
+	events = dump[::-1]
 	return events
 
 def getPillBox(id):
@@ -47,7 +47,6 @@ def getPillBox(id):
 def getTimeToNextPill(id):
 	p = getPillBox(id)
 	getLastEntry(p)
-	pillCount = round(float(h['weight']) / float(p['pillweight']))
 
 
 
@@ -59,15 +58,16 @@ def hello_world():
 def about():
     return 'This is the pilly server backend!'
 
-@app.route('/report/<pid>/<weight>')
-def report(pid, weight):
+@app.route('/report/<pid>/<hours>/<count>')
+def report(pid, count, hours):
 	p = getPillBox(pid)
 	if p == False:
 		return "pillbox not found!"
 	event = {}
 	event['date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-	event['weight'] = weight
+	event['count'] = count
 	p['history'].append(event)
+	p['hoursleft'] = hours
 	return "ok!"
 
 @app.route('/status/<pid>')
@@ -78,10 +78,19 @@ def status(pid):
 	h = getLastEntry(p)
 	r = {}
 	r['id'] = p['id']
-	r['payload'] = h['weight']
+	r['pillCount'] = h['count']
 	r['lastUpdate'] = h['date']
-	r['pillcount'] = round( float(h['weight']) / float(p['pillweight']) )
 	return json.dumps(r)
+
+@app.route('/pilly/<pid>')
+def control_panel(pid):
+	p = getPillBox(pid)
+	if p==False:
+		return 'no match!'
+	events = scanHistory(p)
+	h = getLastEntry(p)
+	hoursleft = p['hoursleft']
+	return render_template('control_panel.html', events = events[0:5], hoursleft = int(hoursleft), pillcount = h['count'])
 
 @app.route('/history/<pid>')
 def history(pid):
@@ -89,6 +98,8 @@ def history(pid):
 	if p==False:
 		return 'no match!'
 	events = scanHistory(p)
+	#detect only pill value changes
+	
 	return str(events)
 
 @app.route('/historyRaw/<pid>')
@@ -124,4 +135,4 @@ def page_not_found(e):
 
 readFile()
 if __name__ == '__main__':
-    app.run('10.132.0.2', 5000, True)]
+    app.run('10.132.0.2', 5000, True)

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="static/control.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<meta charset="UTF-8">
+	<title>Pilly control panel</title>
+</head>
+<body>
+	<script>
+	$(document).ready(function(){
+	    $("div.pillnumber").click(function(){
+	        addEvent("2016-03-20 17:00","Pitching");
+	    });
+	});
+
+	function addEvent(timestamp, event) {
+		var newString = "<tr>\n<td>"+timestamp+"</td>\n<td>"+event+"</td>\n</tr>";
+		var newLine = $(newString).css("display","none");
+		$("tr:first").before(newLine);
+		$("tr:first").slideDown(500);
+		$("tr:last").slideUp(500);
+		$("tr:last").remove();
+	}
+	</script>
+	<ul>
+		<li><a href="/profile" class="navbar-right">Profile</a></li>
+	</ul>
+	<div class="label1">Dad's heart pills</div>
+	<div class="pillnumber">21</div>
+	<div class="label2">left</div>
+	<div class="countdown">Next pill in 3h</div>
+	<div class="spacer"></div>
+	<div class="label3">Recent events</div>
+	<table>
+		<tr>
+			<td>2016-03-17 09:28</td>
+			<td>Pill taken - On time</td>
+		</tr>
+		<tr>
+			<td>2016-03-17 21:03</td>
+			<td>Pill taken - On time</td>
+		</tr>
+		<tr>
+			<td>2016-03-16 21:03</td>
+			<td>Pill taken - On time</td>
+		</tr>
+		<tr>
+			<td>2016-03-15 21:03</td>
+			<td>Pill taken - On time</td>
+		</tr>
+		<tr>
+			<td>2016-03-14 21:03</td>
+			<td>Pill taken - On time</td>
+		</tr>
+	</table>
+	<a href="/event_list" class="events">See all</a>
+</body>
+</html>

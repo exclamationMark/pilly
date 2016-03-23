@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../static/control.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700,900' rel='stylesheet' type='text/css'>
+	<meta charset="UTF-8">
+	<title>Pilly control panel</title>
+	<script type="text/javascript">
+  		var timeout = setTimeout("location.reload(true);",5000);
+  		function resetTimeout() {
+    	clearTimeout(timeout);
+    	timeout = setTimeout("location.reload(true);",5000);
+  		}
+	</script>
+</head>
+<body>
+	<ul>
+		<li><a href="/profile" class="navbar-right">Profile</a></li>
+	</ul>
+	<div class="label1">Dad's heart medication</div>
+	<div class="pillnumber">{%if pillcount%}{{pillcount}}{%else%}?{%endif%}</div>
+	<div class="label2">pills left</div>
+	<div class={%if hoursleft >= 0%}countdown{%else%}redcnt{%endif%}>{%if hoursleft >= 0%}Next pill in {{hoursleft}}h{%else%}Pill due {{hoursleft*-1}}h ago{%endif%}</div>
+	<div class="spacer"></div>
+	<div class="label3">Recent events</div>
+	<table>
+		{% for event in events%}
+			<tr>
+				<td>{{event[0]}}</td>
+				<td>pill taken</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<a href="/event_list" class="events">See all</a>
+</body>
+</html>

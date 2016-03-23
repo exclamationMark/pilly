@@ -17,7 +17,7 @@ li a{
 	text-align: center;
 	text-decoration: none;
     padding: 14px 16px;
-    font-size: 36pt;
+    font-size: 52pt;
 	color: #F7FFFF;
 	font-weight: 400;
 }
@@ -170,4 +170,22 @@ input[type="submit"] {
 form {
 	margin: 30px 0 30px 0;
 	padding: 0 50px 0 50px;
+}
+
+.menu {
+	z-index: 200;
+	overflow-y: scroll;
+	width: 60%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left:0;
+	background-color: #054444;
+}
+
+.menu-element {
+	display: block;
+	text-align: left;
+	font-size: 52pt;
+	color: #F7FFFF;
 }

@@ -18,5 +18,9 @@ def control_panel():
 def login():
 	return render_template('login.html')
 
+@app.route('/about')
+def about():
+	return 'You reached the About page! Congratulations! Now go back <a href="/">home</a>'
+
 if __name__=='__main__':
 	app.run(host='0.0.0.0')

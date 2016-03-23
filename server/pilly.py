@@ -52,11 +52,15 @@ def getTimeToNextPill(id):
 
 @app.route('/')
 def hello_world():
-    return 'Hello World! this works locally!'
+    return render_template('index.html')
 
 @app.route('/about')
 def about():
     return 'This is the pilly server backend!'
+
+@app.route('login')
+def login():
+	return render_template('login.html')
 
 @app.route('/report/<pid>/<hours>/<count>')
 def report(pid, count, hours):

@@ -6,6 +6,7 @@ import time, threading
 app = Flask(__name__)
 
 fileName = 'pbdata.json'
+configFileName = 'serverconfig.json'
 pbs = []
 
 def saveFile():
@@ -133,6 +134,17 @@ def page_not_found(e):
     """Return a custom 404 error."""
     return 'Sorry, nothing at this URL.', 404
 
+#main.c HERP DERP
+try:
+	with open (configFileName, 'r') as configFile:
+		config = json.load(configFile)
+except IOError:
+	print "Config file not found! Loading defaults"
+	config = {}
+	config['ip'] = '127.0.0.1'
+	config['port'] = 5000
+	config['debug'] = True
+
 readFile()
 if __name__ == '__main__':
-    app.run('10.132.0.2', 5000, True)
+    app.run(config['ip'], config['port'], config['debug'])

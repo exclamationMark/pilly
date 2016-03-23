@@ -58,7 +58,7 @@ def hello_world():
 def about():
     return 'This is the pilly server backend!'
 
-@app.route('login')
+@app.route('/login')
 def login():
 	return render_template('login.html')
 

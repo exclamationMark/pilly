@@ -1,11 +1,12 @@
 $(document).ready(function() {
 	var w = $('.menu').width();
 	$('.menu').css({left : -w});
+	$('.table-row:even').css("background-color", "#A1BABA");
+
+	// newEvent function test
 	$('.pillnumber').click(function() {
 		newEvent('dummy1','dummy2');
 	});
-
-	$('.table-row:even').css("background-color", "#A1BABA");
 });
 
 function openMenu() {

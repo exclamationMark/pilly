@@ -112,10 +112,6 @@ li a#active {
 	margin: 0;
 }
 
-/*.table-row:nth-child(even) {
-	background-color: #A1BABA;
-}*/
-
 .events {
 	display: inline-block;
 	float: left;

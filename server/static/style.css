@@ -90,7 +90,7 @@ li a#active {
 	font-weight: 100;
 }
 
-table {
+.table {
 	border-collapse: collapse;
 	font-size: 40pt;
 	color: #054444;
@@ -99,20 +99,22 @@ table {
 	margin: 0;
 }
 
-td {
+.table-cell {
 	padding-top: 10px;
 	padding-bottom: 10px;
 	margin: 0;
+	display: inline-block;
+	width: 45%;
 }
 
-tr {
+.table-row {
 	background-color: #F7FFFF;
 	margin: 0;
 }
 
-tr:nth-child(even) {
+/*.table-row:nth-child(even) {
 	background-color: #A1BABA;
-}
+}*/
 
 .events {
 	display: inline-block;

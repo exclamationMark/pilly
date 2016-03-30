@@ -4,15 +4,17 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="../static/style.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700,900' rel='stylesheet' type='text/css'>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="static/script.js"></script>
 	<meta charset="UTF-8">
 	<title>Pilly control panel</title>
-	<script type="text/javascript">
+	<!--<script type="text/javascript">
   		var timeout = setTimeout("location.reload(true);",5000);
   		function resetTimeout() {
     	clearTimeout(timeout);
     	timeout = setTimeout("location.reload(true);",5000);
   		}
-	</script>
+	</script>-->
 </head>
 <body>
 	<ul>
@@ -24,14 +26,14 @@
 	<div class={%if hoursleft >= 0%}countdown{%else%}redcnt{%endif%}>{%if hoursleft >= 0%}Next pill in {{hoursleft}}h{%else%}Pill due {{hoursleft*-1}}h ago{%endif%}</div>
 	<div class="spacer"></div>
 	<div class="label3">Recent events</div>
-	<table>
+	<div class="table">
 		{% for event in events%}
-			<tr>
-				<td>{{event[0]}}</td>
-				<td>{{event[1]}}</td>
-			</tr>
+			<div class="table-row">
+				<div class="table-cell">{{event[0]}}</div>
+				<div class="table-cell">{{event[1]}}</div>
+			</div>
 		{% endfor %}
-	</table>
+	</div>
 	<a href="/event_list" class="events">See all</a>
 </body>
 </html>

@@ -53,7 +53,7 @@ li a#active {
 	font-size: 72pt;
 	color: #054444;
 	text-align: center;
-	padding: 50px 0 80px 0;
+	padding: 150px 0 80px 0;
 }
 
 .countdown {
@@ -165,6 +165,19 @@ input[type="submit"] {
 	margin-top: 30px;
 	background-color: #054444;
 	color: #F7FFFF;
+}
+
+input[type="checkbox"] {
+	margin-top: 60pt;
+	margin-bottom: 30pt;
+	width: 40pt;
+	height: 40pt;
+}
+
+.chk-label {
+	font-size: 42pt;
+	color: #054444;
+	margin-left: 25pt;
 }
 
 form {

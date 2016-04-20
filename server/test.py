@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, request
 app = Flask(__name__)
 
 events = [['2016-03-23 12:00', 'Pill taken - On time'],['2016-03-23 12:00', 'Pill taken - On time'],['2016-03-23 12:00', 'Pill taken - On time'],['2016-03-23 12:00', 'Pill taken - On time'],['2016-03-23 12:00', 'Pill taken - On time']]
@@ -14,9 +14,19 @@ def index():
 def control_panel():
 	return render_template('control_panel.html', events = events, hoursleft = hoursleft, pillcount = pillcount)
 
-@app.route('/login')
+@app.route('/login', methods = ['POST', 'GET'])
 def login():
-	return render_template('login.html')
+	if request.method == 'POST':
+		print request.form['username']
+		print request.form['password']
+		try:
+			r = request.form['remember']
+			print 'Checked'
+		except KeyError:
+			print 'Unchecked'
+		return redirect(url_for('control_panel'))
+	else:
+		return render_template('login.html')
 
 @app.route('/about')
 def about():

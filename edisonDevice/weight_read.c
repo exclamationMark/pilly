@@ -1,5 +1,14 @@
 #include "mraa.h"
 
+void fuckDelay(int time){
+	int i=0;
+	int dupa=1;
+	for(i=0; i<time; i++) {
+		dupa++;
+	}
+}
+
+
 int main(int argc, char **argv)  
 {  
 	int i, output;
@@ -15,15 +24,16 @@ int main(int argc, char **argv)
     	output = 0; 
         for(i = 0; i < 24; i++) {
         	mraa_gpio_write(clk, 1);
-        	usleep(1);
+        	fuckDelay(2000);
         	output |= (mraa_gpio_read(dat)<< (23-i));
         	mraa_gpio_write(clk, 0);
-        	usleep(1);
+        	fuckDelay(2000);
         }
         mraa_gpio_write(clk, 1);
-        usleep(1);
+        fuckDelay(2000);
         mraa_gpio_write(clk, 0);
-        usleep(1000000);
-        fprintf(stdout, "%d\n", output);  
+        fuckDelay(10000000);
+        if(output < 16777215)
+        	fprintf(stdout, "%d\n", output);  
     }  
 } 

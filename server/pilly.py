@@ -5,140 +5,76 @@ from datetime import datetime, timedelta
 import time, threading
 app = Flask(__name__)
 
-fileName = 'pbdata.json'
-configFileName = 'serverconfig.json'
-pbs = []
+pillies = {}
 
-def saveFile():
-	global pbs
-	with open(fileName, 'w') as outfile:
-		json.dump(pbs, outfile)
+configFileName = 'serverConfig.json'
+class Pilly(object):
+	global pillies
+	
+	description = ''
+	pillCount = 0
 
-def readFile():
-	global pbs
-	with open(fileName, 'r') as infile:
-		pbs = json.load(infile)
+	def __init__(self, pid):
+		self.pid = pid
+		self.readFile()
+		pillies[pid] = self
 
-def getLastEntry(pb):
-	newest = datetime.fromtimestamp(0)
-	for h in pb['history']:
-		t = datetime.strptime(h['date'], "%Y-%m-%d %H:%M:%S")
-		if t > newest:
-			newest = t
-			hate = h
-	return hate
-
-def scanHistory(p):
-	dump = []
-	for h in p['history'][-6:]:
-		t = datetime.strptime(h['date'], "%Y-%m-%d %H:%M:%S")
-		entry = [];
-		entry.append(str(int(   (datetime.now() - t).total_seconds() / 60)) + ' minutes ago')
-		entry.append(float(h['count']))
-		dump.append( entry )
-	events = dump[::-1]
-	return events
-
-def getPillBox(id):
-	for p in pbs:
-		if p['id'] == int(id):
-			return p
-	return False
-
-def getTimeToNextPill(id):
-	p = getPillBox(id)
-	getLastEntry(p)
+	@staticmethod
+	def get(pid):
+		if pid not in pillies:
+			pillies[pid] = Pilly(pid)
+		return pillies[pid]
 
 
+	def readFile(self):
+		fileName = str(self.pid) + '.json'
+		try:
+			with open(config['saveFilePath'] + fileName, 'r') as infile:
+				fileData = json.load(infile)
+				self.pillWeight = fileData['pillWeight']
+				self.description = fileData['description']
+				self.schedule = fileData['schedule']
+				self.history = fileData['history']
+		except:
+			print "no file! creating new pilly!"
+			#self.comments = []
 
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
+	def saveFile(self):
+		fileName = str(self.pid) + '.json'
+		with open(config['saveFilePath'] + fileName, 'w') as outfile:
+			json.dump(self.__dict__, outfile)
 
-@app.route('/about')
-def about():
-    return 'This is the pilly server backend!'
+	def status(self):
+		response = {}
+		response['description'] = self.description
+		response['nextPillTime'] = self.nextPillTime()
+		response['pillCount'] = self.pillCount
+		response['status'] = "ok"
+		response['recent'] = [['4 hours ago', 'taken on time'],['yesterday 20:14', 'taken on time'],['yestarday 10:38', 'taken 2h late'],['2 days ago 20:08', 'taken on time'],['2 days ago 08:02', 'taken on time']]
+		return response
 
-@app.route('/login')
-def login():
-	return render_template('login.html')
+	def nextPillTime(self):
+		return 41
 
-@app.route('/report/<pid>/<hours>/<count>')
-def report(pid, count, hours):
-	p = getPillBox(pid)
-	if p == False:
-		return "pillbox not found!"
-	event = {}
-	event['date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-	event['count'] = count
-	p['history'].append(event)
-	p['hoursleft'] = hours
-	return "ok!"
+	def notifyCaretaker(self):
+		return ""
+
+	def setPillCount(self, pillCount):
+		self.pillCount = pillCount;
+		self.saveFile()
 
 @app.route('/status/<pid>')
 def status(pid):
-	p = getPillBox(pid)
-	if p==False:
-		return 'pilly not found!'
-	h = getLastEntry(p)
-	r = {}
-	r['id'] = p['id']
-	r['pillCount'] = h['count']
-	r['lastUpdate'] = h['date']
-	return json.dumps(r)
+	p = Pilly.get(pid)
+	return json.dumps(p.status())
 
-@app.route('/pilly/<pid>')
-def control_panel(pid):
-	p = getPillBox(pid)
-	if p==False:
-		return 'no match!'
-	events = scanHistory(p)
-	h = getLastEntry(p)
-	hoursleft = p['hoursleft']
-	return render_template('control_panel.html', events = events[0:5], hoursleft = int(hoursleft), pillcount = h['count'])
+@app.route('/updatePillCount/<pid>/<pillCount>')
+def updatePillCount(pid, pillCount):
+	p = Pilly.get(pid)
+	p.setPillCount(pillCount)
+	return json.dumps({'response':'ok'})
 
-@app.route('/history/<pid>')
-def history(pid):
-	p = getPillBox(pid)
-	if p==False:
-		return 'no match!'
-	events = scanHistory(p)
-	#detect only pill value changes
-	
-	return str(events)
-
-@app.route('/historyRaw/<pid>')
-def historyRaw(pid):
-	p = getPillBox(pid)
-	if p==False:
-		return 'no match!'
-	return str(p['history'])
-
-@app.route('/dump')
-def dump():
-	global pbs
-	return str(pbs)
-
-@app.route('/dump2')
-def dump2():
-	global pbs
-	s = ""
-	for p in pbs:
-		s += str(p['id'])
-		s += '<br />'
-	return s
-
-@app.route('/save')
-def save():
-	saveFile()
-	return 'Simulation state SAVED'
-
-@app.errorhandler(404)
-def page_not_found(e):
-    """Return a custom 404 error."""
-    return 'Sorry, nothing at this URL.', 404
-
-#main.c HERP DERP
+#int main(){ herp derp
 try:
 	with open (configFileName, 'r') as configFile:
 		config = json.load(configFile)
@@ -149,6 +85,4 @@ except IOError:
 	config['port'] = 5000
 	config['debug'] = True
 
-readFile()
-if __name__ == '__main__':
-    app.run(config['ip'], config['port'], config['debug'])
+app.run(config['ip'], config['port'], config['debug'])

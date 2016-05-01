@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="co.pilly.pilly.Status">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/dark"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextColor="@color/lightest"
+        app:titleTextColor="@color/lightest"/>
+
+    <TextView
+        android:id="@+id/topLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:text=""
+        android:textColor="@color/dark"
+        android:textSize="12pt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15pt"/>
+
+    <TextView
+        android:id="@+id/pillnr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topLabel"
+        android:text=""
+        android:textColor="@color/dark"
+        android:textSize="52pt"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/pleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pills_left"
+        android:layout_below="@id/pillnr"
+        android:layout_centerHorizontal="true"
+        android:textSize="12pt"
+        android:textColor="@color/dark"/>
+
+    <TextView
+        android:id="@+id/nextpill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="12pt"
+        android:textColor="@color/dark"
+        android:layout_below="@id/pleft"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10pt"/>
+
+    <TextView
+        android:id="@+id/recent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nextpill"
+        android:text="@string/recent_events"
+        android:textColor="@color/dark"
+        android:textSize="10pt"
+        android:layout_marginTop="10pt"/>
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recent"
+        android:stretchColumns="1">
+        <TableRow>
+            <TextView
+                android:id="@+id/timestamp1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="12pt"/>
+            <TextView
+                android:id="@+id/event1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="12pt"/>
+        </TableRow>
+        <TableRow></TableRow>
+        <TableRow></TableRow>
+        <TableRow></TableRow>
+        <TableRow></TableRow>
+    </TableLayout>
+</RelativeLayout>

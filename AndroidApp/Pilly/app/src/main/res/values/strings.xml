@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Pilly</string>
+    <string name="login">Login</string>
+    <string name="schedule">Schedule</string>
+    <string name="status">Status</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="pills_left">pills left</string>
+    <string name="recent_events">Recent events</string>
+    <string name="s_medications">\'s medications</string>
+    <string name="next_pill_in">Next pill in</string>
+    <string name="hours">hours</string>
+</resources>

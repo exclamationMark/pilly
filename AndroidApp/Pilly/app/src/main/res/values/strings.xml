@@ -9,6 +9,6 @@
     <string name="pills_left">pills left</string>
     <string name="recent_events">Recent events</string>
     <string name="s_medications">\'s medications</string>
-    <string name="next_pill_in">Next pill in</string>
-    <string name="hours">hours</string>
+    <string name="next_pill_min">Next pill in %1$d minutes</string>
+    <string name="next_pill_hrs">Next pill in %1$d hours</string>
 </resources>

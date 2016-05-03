@@ -21,7 +21,7 @@
             android:name=".Schedule"
             android:label="@string/schedule" />
         <activity android:name=".Status"
-            android:label="@string/status"></activity>
+            android:label="@string/status"/>
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package co.pilly.pilly;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,23 +10,39 @@ public class Status extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String username = "IDT16";
-        int pillNumber = 12;
-        int hoursLeft = 2;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
+
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Typeface light = Typeface.createFromAsset(this.getAssets(), "Roboto-Thin.ttf");
-        Intent intent = getIntent();
+
+        JessicaFetcher fetcher = new JessicaFetcher("123");
+        Thread thread = new Thread(fetcher);
+        thread.start();
+        while (fetcher.Data == null) {}
+
         TextView topLabel = (TextView) findViewById(R.id.topLabel);
         TextView pillnr = (TextView) findViewById(R.id.pillnr);
         TextView nextPill = (TextView) findViewById(R.id.nextpill);
-
-        topLabel.setText(username + getString(R.string.s_medications));
-        pillnr.setText(String.valueOf(pillNumber));
         pillnr.setTypeface(light);
-        nextPill.setText(getString(R.string.next_pill_in) + " " + hoursLeft + " " + getString(R.string.hours));
+
+        try {
+            topLabel.setText(fetcher.Data.getString("description"));
+            pillnr.setText(String.valueOf(fetcher.Data.getInt("pillCount")));
+            int minutesLeft = fetcher.Data.getInt("nextPillTime");
+
+            if(minutesLeft < 60)
+                nextPill.setText(String.format(getString(R.string.next_pill_min), minutesLeft));
+            else {
+                int hoursLeft = minutesLeft/60;
+                if (minutesLeft%60 > 30)
+                    hoursLeft++;
+                nextPill.setText(String.format(getString(R.string.next_pill_hrs), hoursLeft));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

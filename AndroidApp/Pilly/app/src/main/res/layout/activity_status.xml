@@ -70,33 +70,113 @@
         android:layout_below="@id/nextpill"
         android:text="@string/recent_events"
         android:textColor="@color/dark"
-        android:textSize="10pt"
-        android:layout_marginTop="10pt"/>
+        android:textSize="8pt"
+        android:layout_marginTop="6pt"
+        android:layout_marginBottom="6pt"/>
 
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recent"
         android:stretchColumns="1">
-        <TableRow>
+        <TableRow android:background="@color/light">
             <TextView
                 android:id="@+id/timestamp1"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:text=""
                 android:textColor="@color/dark"
-                android:textSize="12pt"/>
+                android:textSize="10pt"
+                android:paddingLeft="5pt"/>
             <TextView
                 android:id="@+id/event1"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:text=""
                 android:textColor="@color/dark"
-                android:textSize="12pt"/>
+                android:textSize="10pt"
+                android:gravity="right"
+                android:paddingRight="5pt"/>
         </TableRow>
-        <TableRow></TableRow>
-        <TableRow></TableRow>
-        <TableRow></TableRow>
-        <TableRow></TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/timestamp2"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:paddingLeft="5pt"/>
+            <TextView
+                android:id="@+id/event2"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:gravity="right"
+                android:paddingRight="5pt"/>
+        </TableRow>
+
+        <TableRow android:background="@color/light">
+            <TextView
+                android:id="@+id/timestamp3"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:paddingLeft="5pt"/>
+            <TextView
+                android:id="@+id/event3"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:gravity="right"
+                android:paddingRight="5pt"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/timestamp4"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:paddingLeft="5pt"/>
+            <TextView
+                android:id="@+id/event4"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:gravity="right"
+                android:paddingRight="5pt"/>
+        </TableRow>
+
+        <TableRow android:background="@color/light">
+            <TextView
+                android:id="@+id/timestamp5"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:paddingLeft="5pt"/>
+            <TextView
+                android:id="@+id/event5"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text=""
+                android:textColor="@color/dark"
+                android:textSize="10pt"
+                android:gravity="right"
+                android:paddingRight="5pt"/>
+        </TableRow>
     </TableLayout>
 </RelativeLayout>

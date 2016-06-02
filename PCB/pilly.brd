@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.2" altunitdist="mm" altunit="mm"/>
+<grid distance="0.2" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.2" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -140,15 +140,16 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="35.5475" y2="0" width="0" layer="20"/>
-<wire x1="35.5475" y1="0" x2="35.5475" y2="49.8375" width="0" layer="20"/>
-<wire x1="35.5475" y1="49.8375" x2="0.025" y2="49.8375" width="0" layer="20"/>
-<wire x1="0.025" y1="49.8375" x2="0" y2="0" width="0" layer="20"/>
+<wire x1="0" y1="0" x2="35.5" y2="0" width="0" layer="20"/>
+<wire x1="35.5" y1="0" x2="35.5" y2="50" width="0" layer="20"/>
+<wire x1="35.5" y1="50" x2="0" y2="50" width="0" layer="20"/>
+<wire x1="0" y1="50" x2="0" y2="0" width="0" layer="20"/>
 <text x="22.1" y="19.1" size="2.54" layer="1" font="vector" ratio="15">P</text>
 <text x="25.6" y="19.1" size="2.1844" layer="1" font="vector" ratio="15">lly</text>
 <text x="23.8" y="16.3" size="1.016" layer="1" font="vector" ratio="20">rev. 1</text>
 <hole x="3" y="3" drill="3"/>
 <hole x="32.5" y="3" drill="3"/>
+<hole x="32.5" y="47" drill="3"/>
 </plain>
 <libraries>
 <library name="rcl">
@@ -2114,7 +2115,9 @@ design rules under a new name.</description>
 <wire x1="17.595" y1="46.905" x2="17.6" y2="46.9" width="0.2" layer="1"/>
 <wire x1="18.395" y1="47.8675" x2="18.395" y2="46.905" width="0.2" layer="1"/>
 <wire x1="18.395" y1="46.905" x2="18.4" y2="46.9" width="0.2" layer="1"/>
-<wire x1="16.8" y1="46.7" x2="19.2" y2="46.7" width="0.6096" layer="1"/>
+<wire x1="16.8" y1="46.7" x2="17" y2="46.7" width="0.6096" layer="1"/>
+<wire x1="17" y1="46.7" x2="17.2" y2="46.7" width="0.6096" layer="1"/>
+<wire x1="17.2" y1="46.7" x2="19.2" y2="46.7" width="0.6096" layer="1"/>
 <wire x1="19.2" y1="46.7" x2="20.5" y2="46.7" width="0.6096" layer="1"/>
 <wire x1="20.5" y1="46.7" x2="21.2" y2="47.4" width="0.6096" layer="1"/>
 <wire x1="19.195" y1="47.8675" x2="19.195" y2="46.705" width="0.2" layer="1"/>
@@ -2133,7 +2136,10 @@ design rules under a new name.</description>
 <via x="13.6" y="31.6" extent="1-16" drill="0.4" diameter="0.8128"/>
 <via x="7.4" y="38" extent="1-16" drill="0.4" diameter="0.8128"/>
 <via x="20" y="42.4" extent="1-16" drill="0.4" diameter="0.8128"/>
-<wire x1="16.395" y1="47.8675" x2="16.795" y2="47.8675" width="0" layer="19" extent="1-1"/>
+<wire x1="16.795" y1="47.8675" x2="16.795" y2="46.905" width="0.2" layer="1"/>
+<wire x1="16.795" y1="46.905" x2="17" y2="46.7" width="0.2" layer="1"/>
+<wire x1="17.195" y1="46.905" x2="17.195" y2="46.705" width="0.2" layer="1"/>
+<wire x1="17.195" y1="46.705" x2="17.2" y2="46.7" width="0.2" layer="1"/>
 </signal>
 <signal name="N$2">
 <contactref element="IC1" pad="5"/>

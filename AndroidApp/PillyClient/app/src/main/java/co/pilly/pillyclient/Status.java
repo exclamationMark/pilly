@@ -32,12 +32,6 @@ public class Status extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        /*Description = (TextView) findViewById(R.id.description);
-        PillCount = (TextView) findViewById(R.id.pillnr);
-        NextPillTime = (TextView) findViewById(R.id.nextpill);
-        Typeface light = Typeface.createFromAsset(this.getAssets(), "Roboto-Thin.ttf");
-        PillCount.setTypeface(light);*/
-
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null)
                 return;
@@ -82,18 +76,6 @@ public class Status extends AppCompatActivity {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container, statusFragment);
                     fragmentTransaction.commit();
-                    // Set text
-                    /*PillCount.setText(String.valueOf(jsonObject.getInt("pillCount")));
-                    Description.setText(jsonObject.getString("description"));
-                    int next = jsonObject.getInt("nextPillTime");
-                    if(next < 30)
-                        NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_min), next));
-                    else if (next < 90)
-                        NextPillTime.setText(getResources().getText(R.string.next_pill_hr));
-                    else {
-                        int hrs = (int)Math.round((float)next/60.0);
-                        NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_hrs), hrs));
-                    }*/
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -116,9 +98,7 @@ public class Status extends AppCompatActivity {
                 int response = conn.getResponseCode();
                 Log.d("JessicaFetcher", "The response is " + response);
                 is = new BufferedInputStream(conn.getInputStream());
-
                 // Convert input stream to string
-
                 ByteArrayOutputStream bo = new ByteArrayOutputStream();
                 int i = is.read();
                 while (i != -1) {
@@ -134,6 +114,4 @@ public class Status extends AppCompatActivity {
             }
         }
     }
-
-    //TextView PillCount, Description, NextPillTime;
 }

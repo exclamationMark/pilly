@@ -5,8 +5,10 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -27,11 +29,22 @@ public class Status extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
 
-        Description = (TextView) findViewById(R.id.description);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
+        /*Description = (TextView) findViewById(R.id.description);
         PillCount = (TextView) findViewById(R.id.pillnr);
         NextPillTime = (TextView) findViewById(R.id.nextpill);
         Typeface light = Typeface.createFromAsset(this.getAssets(), "Roboto-Thin.ttf");
-        PillCount.setTypeface(light);
+        PillCount.setTypeface(light);*/
+
+        if(findViewById(R.id.fragment_container) != null) {
+            if(savedInstanceState != null)
+                return;
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, new LoadingFragment()).commit();
+        }
 
         ConnectivityManager connectivityManager =   // Start fetching user data
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -64,8 +77,13 @@ public class Status extends AppCompatActivity {
             else {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
+                    StatusFragment statusFragment = new StatusFragment();
+                    statusFragment.setArguments(jsonObject);
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container, statusFragment);
+                    fragmentTransaction.commit();
                     // Set text
-                    PillCount.setText(String.valueOf(jsonObject.getInt("pillCount")));
+                    /*PillCount.setText(String.valueOf(jsonObject.getInt("pillCount")));
                     Description.setText(jsonObject.getString("description"));
                     int next = jsonObject.getInt("nextPillTime");
                     if(next < 30)
@@ -75,7 +93,7 @@ public class Status extends AppCompatActivity {
                     else {
                         int hrs = (int)Math.round((float)next/60.0);
                         NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_hrs), hrs));
-                    }
+                    }*/
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -117,5 +135,5 @@ public class Status extends AppCompatActivity {
         }
     }
 
-    TextView PillCount, Description, NextPillTime;
+    //TextView PillCount, Description, NextPillTime;
 }

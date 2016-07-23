@@ -1,5 +1,6 @@
 package co.pilly.pillyclient;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ActionMode;
@@ -23,7 +24,7 @@ public class Schedule extends AppCompatActivity {
         myToolbar.setTitle("Schedule");
         setSupportActionBar(myToolbar);
 
-        final ListView listView = (ListView) findViewById(R.id.schedule_list);
+        ListView listView = (ListView) findViewById(R.id.schedule_list);
         PillAlert [] alerts = new PillAlert[2];
         alerts[0] = new PillAlert(8, 30, 1, new DAYS[] {DAYS.MON, DAYS.WED});
         alerts[1] = new PillAlert(21, 30, 2, new DAYS[] {DAYS.MON, DAYS.WED, DAYS.FRI, DAYS.SAT, DAYS.SUN});
@@ -34,6 +35,7 @@ public class Schedule extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 view.setSelected(true);
+                // TODO: Fix the 'unable to stay highlighted' issue
                 if(mActionMode != null)
                     return false;
                 mActionMode = startSupportActionMode(mActionModeCallback);
@@ -47,6 +49,18 @@ public class Schedule extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_schedule, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add:
+                Intent intent = new Intent(this, NewAlert.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {

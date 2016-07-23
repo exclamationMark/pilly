@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Status" />
-        <activity android:name=".Schedule"></activity>
+        <activity android:name=".Schedule" />
+        <activity android:name=".NewAlert"></activity>
     </application>
 
 </manifest>

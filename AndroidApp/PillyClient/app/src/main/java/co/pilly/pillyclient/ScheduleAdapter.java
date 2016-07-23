@@ -10,7 +10,6 @@ import android.widget.TextView;
 public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
     public ScheduleAdapter(Context context, int textViewResourceId, PillAlert [] objects) {
         super(context, textViewResourceId, objects);
-        this.context = context;
     }
 
     @Override
@@ -24,7 +23,7 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
         TextView days = (TextView) convertView.findViewById(R.id.days);
 
         alertTime.setText(String.valueOf(alert.getHours()) + ":" + String.valueOf(alert.getMinutes()));
-        quantity.setText(String.format(context.getResources().getString(R.string.quantity), alert.getQuantity()));
+        quantity.setText(String.format(getContext().getResources().getString(R.string.quantity), alert.getQuantity()));
         String displayDays = "";
         DAYS [] alertDays = alert.getDays();
         for(DAYS day : alertDays) {
@@ -59,6 +58,4 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
 
         return convertView;
     }
-
-    Context context;
 }

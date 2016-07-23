@@ -18,7 +18,7 @@ public class Pilly extends AppCompatActivity {
     }
 
     public void login(View view) {
-        Intent intent = new Intent(this, Status.class);
+        Intent intent = new Intent(this, Schedule.class);
         startActivity(intent);
     }
 }

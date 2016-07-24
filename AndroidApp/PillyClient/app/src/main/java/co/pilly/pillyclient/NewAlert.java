@@ -2,6 +2,7 @@ package co.pilly.pillyclient;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,9 +26,15 @@ public class NewAlert extends AppCompatActivity {
         myToolbar.setTitle("New Alert");
         setSupportActionBar(myToolbar);
 
-        // TODO: Distinguish between "add" and "edit"
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra(Schedule.EXTRA_ADD, true)) {
+            DialogFragment newFragment = new TimePickerFragment();
+            newFragment.show(getSupportFragmentManager(), "timePicker");
+        }
+        else {
+            TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
+            alertTime.setText("From edit");
+        }
     }
 
     @Override

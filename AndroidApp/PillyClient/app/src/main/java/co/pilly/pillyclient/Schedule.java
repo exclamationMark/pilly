@@ -13,7 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class Schedule extends AppCompatActivity {
+public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
+    public static final String EXTRA_HOUROFDAY = "co.pilly.pillyclient.EXTRA_HOUROFDAY";
+    public static final String EXTRA_MINUTES = "co.pilly.pillyclient.EXTRA_MINUTES";
+    public static final String EXTRA_DAYS = "co.pilly.pillyclient.EXTRA_DAYS";
+    public static final String EXTRA_ADD = "co.pilli.pilliclient.EXTRA_ADD";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +35,17 @@ public class Schedule extends AppCompatActivity {
         ScheduleAdapter scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, alerts);
         listView.setAdapter(scheduleAdapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                view.setSelected(true);
-                // TODO: Fix the 'unable to stay highlighted' issue
-                if(mActionMode != null)
-                    return false;
-                mActionMode = startSupportActionMode(mActionModeCallback);
-                return true;
-            }
-        });
+        listView.setOnItemLongClickListener(this);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        view.setSelected(true);
+        // TODO: Fix the 'unable to stay highlighted' issue
+        if (mActionMode != null)
+            return false;
+        mActionMode = startSupportActionMode(this);
+        return true;
     }
 
     @Override
@@ -56,6 +60,7 @@ public class Schedule extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add:
                 Intent intent = new Intent(this, NewAlert.class);
+                intent.putExtra(EXTRA_ADD, true);
                 startActivity(intent);
                 return true;
             default:
@@ -63,29 +68,39 @@ public class Schedule extends AppCompatActivity {
         }
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.context_schedule, menu);
-            return true;
-        }
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_schedule, menu);
+        return true;
+    }
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        mActionMode = null;
+    }
 
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit:
+                Intent intent = new Intent(this, NewAlert.class);
+                intent.putExtra(EXTRA_ADD, false);
+                startActivity(intent);
+                return true;
+            case R.id.info:
+                return true;
+            case R.id.delete:
+                return true;
+            default:
+                return false;
         }
+    }
 
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
-        }
-    };
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
 
     ActionMode mActionMode;
 }

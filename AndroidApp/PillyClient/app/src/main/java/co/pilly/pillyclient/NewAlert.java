@@ -1,11 +1,18 @@
 package co.pilly.pillyclient;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class NewAlert extends AppCompatActivity {
 
@@ -17,6 +24,10 @@ public class NewAlert extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setTitle("New Alert");
         setSupportActionBar(myToolbar);
+
+        // TODO: Distinguish between "add" and "edit"
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     @Override
@@ -38,5 +49,10 @@ public class NewAlert extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void changeAlertTime(View view) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 }

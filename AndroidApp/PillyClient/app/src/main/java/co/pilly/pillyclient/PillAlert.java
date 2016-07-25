@@ -1,12 +1,15 @@
 package co.pilly.pillyclient;
 
-public class PillAlert {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class PillAlert implements Parcelable { // TODO: turn this into a parcelable
     private int hours;
     private int minutes;
     private int quantity;
-    private DAYS [] days;
+    private int [] days;
 
-    public PillAlert(int hours, int minutes, int quantity, DAYS [] days) {
+    public PillAlert(int hours, int minutes, int quantity, int [] days) {
         this.hours = hours;
         this.minutes = minutes;
         this.quantity = quantity;
@@ -37,11 +40,42 @@ public class PillAlert {
         this.quantity = quantity;
     }
 
-    public DAYS [] getDays() {
+    public int [] getDays() {
         return days;
     }
 
-    public void setDays(DAYS[] days) {
+    public void setDays(int[] days) {
         this.days = days;
+    }
+
+    // Parcelable overrides
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(hours);
+        out.writeInt(minutes);
+        out.writeInt(quantity);
+        out.writeIntArray(days);
+    }
+
+    public static final Parcelable.Creator<PillAlert> CREATOR
+            = new Parcelable.Creator<PillAlert>() {
+        public PillAlert createFromParcel(Parcel in) {
+            return new PillAlert(in);
+        }
+
+        public PillAlert[] newArray(int size) {
+            return new PillAlert[size];
+        }
+    };
+
+    private PillAlert(Parcel in) {
+        hours = in.readInt();
+        minutes = in.readInt();
+        quantity = in.readInt();
+        days = in.createIntArray();
     }
 }

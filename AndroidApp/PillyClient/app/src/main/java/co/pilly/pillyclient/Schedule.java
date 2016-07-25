@@ -1,6 +1,8 @@
 package co.pilly.pillyclient;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ActionMode;
@@ -13,10 +15,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
-    public static final String EXTRA_HOUROFDAY = "co.pilly.pillyclient.EXTRA_HOUROFDAY";
-    public static final String EXTRA_MINUTES = "co.pilly.pillyclient.EXTRA_MINUTES";
-    public static final String EXTRA_DAYS = "co.pilly.pillyclient.EXTRA_DAYS";
+    public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
     public static final String EXTRA_ADD = "co.pilli.pilliclient.EXTRA_ADD";
 
     @Override
@@ -28,11 +30,16 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         myToolbar.setTitle("Schedule");
         setSupportActionBar(myToolbar);
 
-        ListView listView = (ListView) findViewById(R.id.schedule_list);
+
         PillAlert [] alerts = new PillAlert[2];
-        alerts[0] = new PillAlert(8, 30, 1, new DAYS[] {DAYS.MON, DAYS.WED});
-        alerts[1] = new PillAlert(21, 30, 2, new DAYS[] {DAYS.MON, DAYS.WED, DAYS.FRI, DAYS.SAT, DAYS.SUN});
-        ScheduleAdapter scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, alerts);
+        alerts[0] = new PillAlert(8, 30, 1, new int[] {1, 3});
+        alerts[1] = new PillAlert(21, 30, 2, new int[] {1, 3, 5, 6, 7});
+        ArrayList<PillAlert> aList = new ArrayList<>(2);
+        for (int i = 0; i < alerts.length; i++)
+            aList.add(alerts[i]);
+
+        listView = (ListView) findViewById(R.id.schedule_list);
+        scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList);
         listView.setAdapter(scheduleAdapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemLongClickListener(this);
@@ -41,6 +48,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         view.setSelected(true);
+        listView.setItemChecked(i, true);
         // TODO: Fix the 'unable to stay highlighted' issue
         if (mActionMode != null)
             return false;
@@ -61,7 +69,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
             case R.id.add:
                 Intent intent = new Intent(this, NewAlert.class);
                 intent.putExtra(EXTRA_ADD, true);
-                startActivity(intent);
+                startActivityForResult(intent, 2);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -84,13 +92,31 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit:
+                PillAlert toEdit = (PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition());
                 Intent intent = new Intent(this, NewAlert.class);
                 intent.putExtra(EXTRA_ADD, false);
-                startActivity(intent);
+                intent.putExtra(EXTRA_PILLALERT, toEdit);
+                startActivityForResult(intent, 2);
                 return true;
             case R.id.info:
                 return true;
             case R.id.delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder
+                        .setMessage(getResources().getString(R.string.alert_delete_confirm))
+                        .setPositiveButton(getResources().getString(R.string.yes),  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
                 return true;
             default:
                 return false;
@@ -102,5 +128,19 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 2) { // TODO: complete this
+            if(resultCode == NewAlert.RESULT_SAVE) {
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     ActionMode mActionMode;
+    ListView listView;
+    ScheduleAdapter scheduleAdapter;
 }

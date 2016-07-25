@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class NewAlert extends AppCompatActivity {
+    public static final int RESULT_SAVE = 3;
+    public static final int RESULT_CANCEL = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,9 @@ public class NewAlert extends AppCompatActivity {
             newFragment.show(getSupportFragmentManager(), "timePicker");
         }
         else {
+            alert = intent.getParcelableExtra(Schedule.EXTRA_PILLALERT);
             TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
-            alertTime.setText("From edit");
+            alertTime.setText(formatTime(alert.getHours(), alert.getMinutes()));
         }
     }
 
@@ -48,10 +51,16 @@ public class NewAlert extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cancel:
-                // TODO: Add action on cancel menu button press
+                // TODO: Add suitable code here
+                Intent intent_cancel = new Intent();
+                setResult(RESULT_CANCEL, intent_cancel);
+                finish();
                 return true;
             case R.id.save:
-                // TODO: Add action on save menu button press
+                Intent intent_save = new Intent();
+                setResult(RESULT_SAVE, intent_save);
+                finish();
+                // TODO: And here
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -59,7 +68,34 @@ public class NewAlert extends AppCompatActivity {
     }
 
     public void changeAlertTime(View view) {
+        TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
+        String hourText = alertTime.getText().toString();
+        String[] hrMin = hourText.split(":");
+        alert.setHours(Integer.valueOf(hrMin[0]));
+        alert.setMinutes(Integer.valueOf(hrMin[1]));
         DialogFragment newFragment = new TimePickerFragment();
+        Bundle args = new Bundle();
+        args.putInt("hourOfDay", alert.getHours());
+        args.putInt("minute", alert.getMinutes());
+        newFragment.setArguments(args);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
+
+    public static String formatTime(int hourOfDay, int minute) {
+        if(hourOfDay < 10) {
+            if (minute < 10) {
+                return "0" + hourOfDay + ":0" + minute;
+            } else {
+                return "0" + hourOfDay + ":" + minute;
+            }
+        } else {
+            if(minute < 10) {
+                return hourOfDay + ":0" + minute;
+            } else {
+                return hourOfDay + ":" + minute;
+            }
+        }
+    }
+
+    PillAlert alert;
 }

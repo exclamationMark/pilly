@@ -15,17 +15,23 @@ public class TimePickerFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         timeLabel = (TextView) getActivity().findViewById(R.id.alert_time_label);
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, 0, 0,
+        return new TimePickerDialog(getActivity(), this, hourOfDay, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         this.hourOfDay = hourOfDay;
         this.minute = minute;
-        timeLabel.setText(hourOfDay + ":" + minute);
+        timeLabel.setText(NewAlert.formatTime(hourOfDay,minute));
+
     }
 
-    int hourOfDay;
-    int minute;
+    public void setArguments(Bundle arguments) {
+        hourOfDay = arguments.getInt("hourOfDay");
+        minute = arguments.getInt("minute");
+    }
+
+    int hourOfDay = 0;
+    int minute = 0;
     TextView timeLabel;
 }

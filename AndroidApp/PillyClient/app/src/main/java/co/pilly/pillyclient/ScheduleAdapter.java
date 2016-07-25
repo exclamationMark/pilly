@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
-    public ScheduleAdapter(Context context, int textViewResourceId, PillAlert [] objects) {
+    public ScheduleAdapter(Context context, int textViewResourceId, List<PillAlert> objects) {
         super(context, textViewResourceId, objects);
     }
 
@@ -24,29 +26,34 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
 
         alertTime.setText(String.valueOf(alert.getHours()) + ":" + String.valueOf(alert.getMinutes()));
         quantity.setText(String.format(getContext().getResources().getString(R.string.quantity), alert.getQuantity()));
+        days.setText(formatDaysString(alert.getDays()));
+
+        return convertView;
+    }
+
+    public static String formatDaysString(int[] alertDays) {
         String displayDays = "";
-        DAYS [] alertDays = alert.getDays();
-        for(DAYS day : alertDays) {
+        for(int day : alertDays) {
             switch(day) {
-                case MON:
+                case 1:
                     displayDays += "MON, ";
                     break;
-                case TUE:
+                case 2:
                     displayDays += "TUE, ";
                     break;
-                case WED:
+                case 3:
                     displayDays += "WED, ";
                     break;
-                case THU:
+                case 4:
                     displayDays += "THU, ";
                     break;
-                case FRI:
+                case 5:
                     displayDays += "FRI, ";
                     break;
-                case SAT:
+                case 6:
                     displayDays += "SAT, ";
                     break;
-                case SUN:
+                case 7:
                     displayDays += "SUN, ";
                     break;
                 default:
@@ -54,8 +61,6 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
             }
         }
         displayDays = displayDays.substring(0, displayDays.length()-2);
-        days.setText(displayDays);
-
-        return convertView;
+        return displayDays;
     }
 }

@@ -20,4 +20,7 @@
     <string name="info">Info</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="alert_delete_confirm">Delete the selected alert?</string>
 </resources>

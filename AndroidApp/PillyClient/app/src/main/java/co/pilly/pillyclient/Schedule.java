@@ -112,6 +112,8 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                         .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                if(mActionMode != null)
+                                    mActionMode.finish();
                                 scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
                             }
                         })
@@ -122,8 +124,6 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                             }
                         })
                         .show();
-                if(mActionMode != null)
-                    mActionMode.finish();
                 return true;
             default:
                 return false;

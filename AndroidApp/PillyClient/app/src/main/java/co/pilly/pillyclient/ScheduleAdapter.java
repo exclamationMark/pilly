@@ -27,7 +27,7 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
         TextView quantity = (TextView) convertView.findViewById(R.id.quantity);
         TextView days = (TextView) convertView.findViewById(R.id.days);
 
-        alertTime.setText(String.valueOf(alert.getHours()) + ":" + String.valueOf(alert.getMinutes()));
+        alertTime.setText(NewAlert.formatTime(alert.getHours(), alert.getMinutes()));
         quantity.setText(String.format(getContext().getResources().getString(R.string.quantity), alert.getQuantity()));
         days.setText(formatDaysString(alert.getDays()));
 

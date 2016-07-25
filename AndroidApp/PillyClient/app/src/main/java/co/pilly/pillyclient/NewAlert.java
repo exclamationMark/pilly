@@ -3,6 +3,7 @@ package co.pilly.pillyclient;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -20,7 +22,7 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
+public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener{
     public static final int RESULT_SAVE = 3;
     public static final int RESULT_CANCEL = 666;
     public static final int ACTION_ADD = 42;
@@ -35,15 +37,25 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
         myToolbar.setTitle("New Alert");
         setSupportActionBar(myToolbar);
 
+        Typeface light = Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf");
+        TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
+        alertTime.setTypeface(light);
+
+        NumberPicker quantityPicker = (NumberPicker) findViewById(R.id.quantity_picker);
+        quantityPicker.setMinValue(1);
+        quantityPicker.setMaxValue(99);
+        quantityPicker.setWrapSelectorWheel(false);
+        quantityPicker.setOnValueChangedListener(this);
+
         Intent intent = getIntent();
         if(intent.getBooleanExtra(Schedule.EXTRA_ADD, true)) {
             DialogFragment newFragment = new TimePickerFragment();
             newFragment.show(getSupportFragmentManager(), "timePicker");
-            alert = new PillAlert(0, 0, 0, new int[]{});
+            alert = new PillAlert(0, 0, 1, new int[]{});
         }
         else {
             alert = intent.getParcelableExtra(Schedule.EXTRA_PILLALERT);
-            TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
+            quantityPicker.setValue(alert.getQuantity());
             alertTime.setText(formatTime(alert.getHours(), alert.getMinutes()));
             for(int day : alert.getDays()) {
                 ToggleButton toggleButton;
@@ -116,6 +128,11 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
         alert.setHours(hourOfDay);
         alert.setMinutes(minute);
         timeLabel.setText(formatTime(hourOfDay, minute));
+    }
+
+    @Override
+    public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
+        alert.setQuantity(newVal);
     }
 
     public void changeAlertTime(View view) {

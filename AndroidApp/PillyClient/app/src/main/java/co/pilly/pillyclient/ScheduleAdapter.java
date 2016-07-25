@@ -1,6 +1,7 @@
 package co.pilly.pillyclient;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,9 @@ import android.widget.TextView;
 import java.util.List;
 
 public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
-    public ScheduleAdapter(Context context, int textViewResourceId, List<PillAlert> objects) {
+    public ScheduleAdapter(Context context, int textViewResourceId, List<PillAlert> objects, Typeface tf) {
         super(context, textViewResourceId, objects);
+        this.light = tf;
     }
 
     @Override
@@ -21,6 +23,7 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
 
         PillAlert alert = getItem(position);
         TextView alertTime = (TextView) convertView.findViewById(R.id.alert_time);
+        alertTime.setTypeface(light);
         TextView quantity = (TextView) convertView.findViewById(R.id.quantity);
         TextView days = (TextView) convertView.findViewById(R.id.days);
 
@@ -65,4 +68,6 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
         displayDays = displayDays.substring(0, displayDays.length()-2);
         return displayDays;
     }
+
+    Typeface light;
 }

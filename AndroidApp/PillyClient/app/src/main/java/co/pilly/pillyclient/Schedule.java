@@ -2,6 +2,7 @@ package co.pilly.pillyclient;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
             aList.add(alerts[i]);
 
         listView = (ListView) findViewById(R.id.schedule_list);
-        scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList);
+        scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList, Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf"));
         listView.setAdapter(scheduleAdapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemLongClickListener(this);

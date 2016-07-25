@@ -24,4 +24,12 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="alert_delete_confirm">Delete the selected alert?</string>
+    <string name="monday_init">M</string>
+    <string name="tuesday_init">T</string>
+    <string name="wednesday_init">W</string>
+    <string name="thursday_init">T</string>
+    <string name="friday_init">F</string>
+    <string name="saturday_init">S</string>
+    <string name="sunday_init">S</string>
+    <string name="no_days_selected">Please select at least one day</string>
 </resources>

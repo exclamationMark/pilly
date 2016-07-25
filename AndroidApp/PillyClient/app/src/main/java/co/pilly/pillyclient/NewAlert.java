@@ -14,10 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     public static final int RESULT_SAVE = 3;
     public static final int RESULT_CANCEL = 666;
+    public static final int ACTION_ADD = 42;
+    public static final int ACTION_EDIT = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +39,43 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
         if(intent.getBooleanExtra(Schedule.EXTRA_ADD, true)) {
             DialogFragment newFragment = new TimePickerFragment();
             newFragment.show(getSupportFragmentManager(), "timePicker");
+            alert = new PillAlert(0, 0, 0, new int[]{});
         }
         else {
             alert = intent.getParcelableExtra(Schedule.EXTRA_PILLALERT);
             TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
             alertTime.setText(formatTime(alert.getHours(), alert.getMinutes()));
+            for(int day : alert.getDays()) {
+                ToggleButton toggleButton;
+                switch(day) {
+                    case 1:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_monday);
+                        break;
+                    case 2:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_tuesday);
+                        break;
+                    case 3:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_wednesday);
+                        break;
+                    case 4:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_thursday);
+                        break;
+                    case 5:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_friday);
+                        break;
+                    case 6:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_saturday);
+                        break;
+                    case 7:
+                        toggleButton = (ToggleButton) findViewById(R.id.toggle_sunday);
+                        break;
+                    default:
+                        toggleButton = null;
+                        break;
+                }
+                if (toggleButton != null)
+                    toggleButton.setChecked(true);
+            }
         }
     }
 
@@ -56,6 +95,11 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
                 finish();
                 return true;
             case R.id.save:
+                updateDays();
+                if(alert.getDays().length == 0) {
+                    Toast.makeText(this, getResources().getString(R.string.no_days_selected), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 Intent intent_save = new Intent();
                 intent_save.putExtra(Schedule.EXTRA_PILLALERT, alert);
                 setResult(RESULT_SAVE, intent_save);
@@ -97,6 +141,37 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
                 return hourOfDay + ":" + minute;
             }
         }
+    }
+
+    private void updateDays() {
+        ArrayList<Integer> daysList = new ArrayList<>();
+        ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggle_monday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(1));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_tuesday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(2));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_wednesday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(3));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_thursday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(4));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_friday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(5));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_saturday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(6));
+        toggleButton = (ToggleButton) findViewById(R.id.toggle_sunday);
+        if(toggleButton.isChecked())
+            daysList.add(Integer.valueOf(7));
+        Integer[] daysArray = daysList.toArray(new Integer[daysList.size()]);
+        int[] intDaysArray = new int[daysArray.length];
+        for(int i = 0; i < daysArray.length; i++)
+            intDaysArray[i] = daysArray[i].intValue();
+
+        alert.setDays(intDaysArray);
     }
 
     PillAlert alert;

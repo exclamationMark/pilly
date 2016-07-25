@@ -30,6 +30,7 @@ public class Status extends AppCompatActivity {
         setContentView(R.layout.activity_status);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        myToolbar.setTitle("Status");
         setSupportActionBar(myToolbar);
 
         if(findViewById(R.id.fragment_container) != null) {

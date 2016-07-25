@@ -69,7 +69,9 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
             case R.id.add:
                 Intent intent = new Intent(this, NewAlert.class);
                 intent.putExtra(EXTRA_ADD, true);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, NewAlert.ACTION_ADD);
+                if(mActionMode != null)
+                    mActionMode.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -96,7 +98,9 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                 Intent intent = new Intent(this, NewAlert.class);
                 intent.putExtra(EXTRA_ADD, false);
                 intent.putExtra(EXTRA_PILLALERT, toEdit);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, NewAlert.ACTION_EDIT);
+                if(mActionMode != null)
+                    mActionMode.finish();
                 return true;
             case R.id.info:
                 return true;
@@ -117,6 +121,8 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                             }
                         })
                         .show();
+                if(mActionMode != null)
+                    mActionMode.finish();
                 return true;
             default:
                 return false;
@@ -133,7 +139,14 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == NewAlert.RESULT_SAVE) {
             Toast.makeText(this, getResources().getString(R.string.alert_saved), Toast.LENGTH_SHORT).show();
-            aList.set(listView.getCheckedItemPosition(), (PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+            switch (requestCode) {
+                case NewAlert.ACTION_EDIT:
+                    aList.set(listView.getCheckedItemPosition(), (PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+                    break;
+                case NewAlert.ACTION_ADD:
+                    aList.add((PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+                    break;
+            }
             scheduleAdapter.notifyDataSetChanged();
         }
     }

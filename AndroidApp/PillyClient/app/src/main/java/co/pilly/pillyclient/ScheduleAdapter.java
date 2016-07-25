@@ -60,6 +60,8 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
                     break;
             }
         }
+        if (displayDays.equals(""))
+            return "";
         displayDays = displayDays.substring(0, displayDays.length()-2);
         return displayDays;
     }

@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-public class NewAlert extends AppCompatActivity {
+public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     public static final int RESULT_SAVE = 3;
     public static final int RESULT_CANCEL = 666;
 
@@ -51,28 +51,30 @@ public class NewAlert extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cancel:
-                // TODO: Add suitable code here
                 Intent intent_cancel = new Intent();
                 setResult(RESULT_CANCEL, intent_cancel);
                 finish();
                 return true;
             case R.id.save:
                 Intent intent_save = new Intent();
+                intent_save.putExtra(Schedule.EXTRA_PILLALERT, alert);
                 setResult(RESULT_SAVE, intent_save);
                 finish();
-                // TODO: And here
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        TextView timeLabel = (TextView) findViewById(R.id.alert_time_label);
+        alert.setHours(hourOfDay);
+        alert.setMinutes(minute);
+        timeLabel.setText(formatTime(hourOfDay, minute));
+    }
+
     public void changeAlertTime(View view) {
-        TextView alertTime = (TextView) findViewById(R.id.alert_time_label);
-        String hourText = alertTime.getText().toString();
-        String[] hrMin = hourText.split(":");
-        alert.setHours(Integer.valueOf(hrMin[0]));
-        alert.setMinutes(Integer.valueOf(hrMin[1]));
         DialogFragment newFragment = new TimePickerFragment();
         Bundle args = new Bundle();
         args.putInt("hourOfDay", alert.getHours());

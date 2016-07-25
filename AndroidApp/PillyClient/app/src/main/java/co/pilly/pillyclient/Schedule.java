@@ -31,10 +31,10 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         setSupportActionBar(myToolbar);
 
 
-        PillAlert [] alerts = new PillAlert[2];
-        alerts[0] = new PillAlert(8, 30, 1, new int[] {1, 3});
-        alerts[1] = new PillAlert(21, 30, 2, new int[] {1, 3, 5, 6, 7});
-        ArrayList<PillAlert> aList = new ArrayList<>(2);
+        PillAlert[] alerts = new PillAlert[2];
+        alerts[0] = new PillAlert(8, 30, 1, new int[]{1, 3});
+        alerts[1] = new PillAlert(21, 30, 2, new int[]{1, 3, 5, 6, 7});
+        aList = new ArrayList<>(2);
         for (int i = 0; i < alerts.length; i++)
             aList.add(alerts[i]);
 
@@ -104,7 +104,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder
                         .setMessage(getResources().getString(R.string.alert_delete_confirm))
-                        .setPositiveButton(getResources().getString(R.string.yes),  new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
@@ -131,16 +131,15 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 2) { // TODO: complete this
-            if(resultCode == NewAlert.RESULT_SAVE) {
-                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
-            }
+        if (resultCode == NewAlert.RESULT_SAVE) {
+            Toast.makeText(this, getResources().getString(R.string.alert_saved), Toast.LENGTH_SHORT).show();
+            aList.set(listView.getCheckedItemPosition(), (PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+            scheduleAdapter.notifyDataSetChanged();
         }
     }
 
     ActionMode mActionMode;
     ListView listView;
     ScheduleAdapter scheduleAdapter;
+    ArrayList<PillAlert> aList;
 }

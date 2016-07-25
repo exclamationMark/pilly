@@ -3,7 +3,7 @@ package co.pilly.pillyclient;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PillAlert implements Parcelable { // TODO: turn this into a parcelable
+public class PillAlert implements Parcelable {
     private int hours;
     private int minutes;
     private int quantity;

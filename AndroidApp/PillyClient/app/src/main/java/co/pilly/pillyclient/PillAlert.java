@@ -1,5 +1,6 @@
 package co.pilly.pillyclient;
 
+import android.app.PendingIntent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,13 +8,15 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
     private int hours;
     private int minutes;
     private int quantity;
-    private int [] days;
+    private int[] days;
+    private PendingIntent pendingIntent;
 
-    public PillAlert(int hours, int minutes, int quantity, int [] days) {
+    public PillAlert(int hours, int minutes, int quantity, int[] days) {
         this.hours = hours;
         this.minutes = minutes;
         this.quantity = quantity;
         this.days = days;
+        this.pendingIntent = null;
     }
 
     public int getHours() {
@@ -40,12 +43,20 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         this.quantity = quantity;
     }
 
-    public int [] getDays() {
+    public int[] getDays() {
         return days;
     }
 
     public void setDays(int[] days) {
         this.days = days;
+    }
+
+    public PendingIntent getPendingIntent() {
+        return pendingIntent;
+    }
+
+    public void setPendingIntent(PendingIntent pendingIntent) {
+        this.pendingIntent = pendingIntent;
     }
 
     // Parcelable overrides
@@ -82,8 +93,8 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
     // Comparable overrides
 
     public int compareTo(PillAlert o) {
-        int thisValue = this.getHours()*100 + this.getMinutes();
-        int thatValue = o.getHours()*100 + o.getMinutes();
+        int thisValue = this.getHours() * 100 + this.getMinutes();
+        int thatValue = o.getHours() * 100 + o.getMinutes();
         return thisValue - thatValue;
     }
 }

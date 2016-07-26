@@ -1,5 +1,8 @@
 package co.pilly.pillyclient;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -18,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -31,9 +35,11 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         setContentView(R.layout.activity_schedule);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        myToolbar.setTitle("Schedule");
+        myToolbar.setTitle(getResources().getString(R.string.schedule));
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         PillAlert[] alerts = new PillAlert[2];
         alerts[1] = new PillAlert(8, 30, 1, new int[]{1, 3});
@@ -145,17 +151,29 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == NewAlert.RESULT_SAVE) {
-            Toast.makeText(this, getResources().getString(R.string.alert_saved), Toast.LENGTH_SHORT).show();
+            PillAlert receivedAlert = data.getParcelableExtra(EXTRA_PILLALERT);
+            /* Intent intent = new Intent(this, Schedule.class);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, receivedAlert.getHours());
+            calendar.set(Calendar.MINUTE, receivedAlert.getMinutes()); */
+            // TODO: Build an alarm receiver
             switch (requestCode) {
                 case NewAlert.ACTION_EDIT:
-                    aList.set(listView.getCheckedItemPosition(), (PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+                    /* alarmManager.cancel(receivedAlert.getPendingIntent());
+                    receivedAlert.setPendingIntent(PendingIntent.getBroadcast(this, 0, intent, 0));
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), receivedAlert.getPendingIntent());*/
+                    aList.set(listView.getCheckedItemPosition(), receivedAlert);
                     break;
                 case NewAlert.ACTION_ADD:
-                    aList.add((PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
+                    /* receivedAlert.setPendingIntent(PendingIntent.getBroadcast(this, 0, intent, 0));
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), receivedAlert.getPendingIntent()); */
+                    aList.add(receivedAlert);
                     break;
             }
             Collections.sort(aList);
             scheduleAdapter.notifyDataSetChanged();
+            Toast.makeText(this, getResources().getString(R.string.alert_saved), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -163,4 +181,5 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
     ListView listView;
     ScheduleAdapter scheduleAdapter;
     ArrayList<PillAlert> aList;
+    AlarmManager alarmManager;
 }

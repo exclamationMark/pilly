@@ -1,6 +1,7 @@
 package co.pilly.pillyclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,7 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +52,37 @@ public class Status extends AppCompatActivity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://192.168.1.6:5000/getinfo/123");
+            new JessicaFetcher().execute("http://192.168.1.3:5000/getinfo/123");
         }
         else {
             System.out.println("No connection available");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_status, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_all_events:
+                onEventClick((TableLayout) findViewById(R.id.table_recent_events));
+                return true;
+            case R.id.menu_schedule:
+                Intent scheduleIntent = new Intent(this, Schedule.class);
+                startActivity(scheduleIntent);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public void onEventClick(View view) {
+        Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
     }
 
     private class JessicaFetcher extends AsyncTask<String, Void, String> {

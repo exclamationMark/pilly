@@ -32,4 +32,5 @@
     <string name="saturday_init">S</string>
     <string name="sunday_init">S</string>
     <string name="no_days_selected">Please select at least one day</string>
+    <string name="all_events">All events</string>
 </resources>

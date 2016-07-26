@@ -3,7 +3,7 @@ package co.pilly.pillyclient;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PillAlert implements Parcelable {
+public class PillAlert implements Parcelable, Comparable<PillAlert> {
     private int hours;
     private int minutes;
     private int quantity;
@@ -77,5 +77,13 @@ public class PillAlert implements Parcelable {
         minutes = in.readInt();
         quantity = in.readInt();
         days = in.createIntArray();
+    }
+
+    // Comparable overrides
+
+    public int compareTo(PillAlert o) {
+        int thisValue = this.getHours()*100 + this.getMinutes();
+        int thatValue = o.getHours()*100 + o.getMinutes();
+        return thisValue - thatValue;
     }
 }

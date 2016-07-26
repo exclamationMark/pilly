@@ -3,6 +3,7 @@ package co.pilly.pillyclient;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
@@ -30,26 +33,26 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         myToolbar.setTitle("Schedule");
         setSupportActionBar(myToolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         PillAlert[] alerts = new PillAlert[2];
-        alerts[0] = new PillAlert(8, 30, 1, new int[]{1, 3});
-        alerts[1] = new PillAlert(21, 30, 2, new int[]{1, 3, 5, 6, 7});
+        alerts[1] = new PillAlert(8, 30, 1, new int[]{1, 3});
+        alerts[0] = new PillAlert(21, 30, 2, new int[]{1, 3, 5, 6, 7});
         aList = new ArrayList<>(2);
         for (int i = 0; i < alerts.length; i++)
             aList.add(alerts[i]);
-
+        Collections.sort(aList);
         listView = (ListView) findViewById(R.id.schedule_list);
         scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList, Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf"));
         listView.setAdapter(scheduleAdapter);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemLongClickListener(this);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        view.setSelected(true);
         listView.setItemChecked(i, true);
+        view.setSelected(true);
         // TODO: Fix the 'unable to stay highlighted' issue
         if (mActionMode != null)
             return false;
@@ -73,6 +76,9 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                 startActivityForResult(intent, NewAlert.ACTION_ADD);
                 if(mActionMode != null)
                     mActionMode.finish();
+                return true;
+            case R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -148,6 +154,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                     aList.add((PillAlert) data.getParcelableExtra(EXTRA_PILLALERT));
                     break;
             }
+            Collections.sort(aList);
             scheduleAdapter.notifyDataSetChanged();
         }
     }

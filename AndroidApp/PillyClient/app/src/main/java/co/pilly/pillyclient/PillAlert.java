@@ -63,7 +63,7 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
             if (calendar.get(Calendar.HOUR_OF_DAY)*100+calendar.get(Calendar.MINUTE) < hours*100 + minutes) {
                 calendar.set(Calendar.HOUR_OF_DAY, hours);
                 calendar.set(Calendar.MINUTE, minutes);
-                return calendar.getTimeInMillis() - System.currentTimeMillis();
+                return calendar.getTimeInMillis();
             }
         }
         int i;
@@ -74,12 +74,12 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
             calendar.add(Calendar.DAY_OF_MONTH, days[i] - calendar.get(Calendar.DAY_OF_WEEK));
             calendar.set(Calendar.HOUR_OF_DAY, hours);
             calendar.set(Calendar.MINUTE, minutes);
-            return calendar.getTimeInMillis() - System.currentTimeMillis();
+            return calendar.getTimeInMillis();
         }
         calendar.add(Calendar.DAY_OF_MONTH, days[0] + 7 - calendar.get(Calendar.DAY_OF_WEEK));
         calendar.set(Calendar.HOUR_OF_DAY, hours);
         calendar.set(Calendar.MINUTE, minutes);
-        return calendar.getTimeInMillis() - System.currentTimeMillis();
+        return calendar.getTimeInMillis();
     }
 
     // Parcelable overrides

@@ -28,6 +28,7 @@ import java.util.Collections;
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
     public static final String EXTRA_ADD = "co.pilli.pilliclient.EXTRA_ADD";
+    public static final int ALARM_INTENT_ID = 11596;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +156,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
             PillAlert receivedAlert = data.getParcelableExtra(EXTRA_PILLALERT);
             Intent intent = new Intent(this, AlarmHandler.class);
             intent.putExtra(Schedule.EXTRA_PILLALERT, receivedAlert);
-            PendingIntent newAlarmPendingIntent = PendingIntent.getService(this, 0, intent, 0);
+            PendingIntent newAlarmPendingIntent = PendingIntent.getService(this, ALARM_INTENT_ID, intent, 0);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis()); // Used to set the current date other than hor and minute
             calendar.set(Calendar.HOUR_OF_DAY, receivedAlert.getHours());
@@ -169,7 +170,8 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                     aList.set(listView.getCheckedItemPosition(), receivedAlert);
                     break;
                 case NewAlert.ACTION_ADD:
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), newAlarmPendingIntent);
+                    alarmManager.cancel(newAlarmPendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), newAlarmPendingIntent);
                     aList.add(receivedAlert);
                     break;
             }

@@ -19,12 +19,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".Status" />
-        <activity android:name=".Schedule" >
+        <activity android:name=".Schedule">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Status"/>
+                android:value=".Status" />
         </activity>
         <activity android:name=".NewAlert" />
+
+        <service
+            android:name=".AlarmHandler"
+            android:exported="false"/>
     </application>
 
 </manifest>

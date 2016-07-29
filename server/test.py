@@ -38,5 +38,9 @@ def getinfo():
 	# time.sleep(2)
 	return '{"description" : "Dad\'s heart medication", "pillCount" : 6, "nextPillTime" : 72, "recent" : [{"date" : "2000-12-8 21:05", "event" : "On time"}, {"date" : "2000-12-9 21:02", "event" : "On time"}, {"date" : "2000-12-10 22:07", "event" : "1h late"}, {"date" : "2000-12-11 21:08", "event" : "On time"}, {"date" : "2000-12-12 20:58", "event" : "On time"}]}'
 
+@app.route('/mustissuewarning/123')
+def mustissuewarning():
+	return '1'
+
 if __name__=='__main__':
 	app.run(host='0.0.0.0')

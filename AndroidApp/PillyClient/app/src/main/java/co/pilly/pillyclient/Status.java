@@ -37,7 +37,7 @@ public class Status extends AppCompatActivity {
         setContentView(R.layout.activity_status);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        myToolbar.setTitle("Status");
+        myToolbar.setTitle(getResources().getString(R.string.status));
         setSupportActionBar(myToolbar);
 
         if(findViewById(R.id.fragment_container) != null) {
@@ -55,7 +55,7 @@ public class Status extends AppCompatActivity {
             new JessicaFetcher().execute("http://192.168.1.3:5000/getinfo/123");
         }
         else {
-            System.out.println("No connection available");
+            Log.d("Status", "WARNING: No connection available");
         }
     }
 
@@ -70,7 +70,7 @@ public class Status extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_all_events:
-                onEventClick((TableLayout) findViewById(R.id.table_recent_events));
+                onEventClick(findViewById(R.id.table_recent_events));
                 return true;
             case R.id.menu_schedule:
                 Intent scheduleIntent = new Intent(this, Schedule.class);
@@ -82,7 +82,9 @@ public class Status extends AppCompatActivity {
     }
 
     public void onEventClick(View view) {
-        Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AlarmHandler.class);
+        startService(intent);
     }
 
     private class JessicaFetcher extends AsyncTask<String, Void, String> {
@@ -93,6 +95,7 @@ public class Status extends AppCompatActivity {
             }
             catch (IOException e) {
                 e.printStackTrace();
+                Log.d("JessicaFetcher", "Caught IOException");
                 return "Error";
             }
         }
@@ -100,7 +103,7 @@ public class Status extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if(result.equals("Error")) {
-                System.out.println("Something wrong");
+                Log.d("JessicaFetcher", "ERROR: Could not create JSONObject");
             }
             else {
                 try {

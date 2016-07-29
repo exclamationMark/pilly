@@ -39,25 +39,25 @@ public class ScheduleAdapter extends ArrayAdapter<PillAlert> {
         String displayDays = "";
         for(int day : alertDays) {
             switch(day) {
-                case 1:
+                case 2:
                     displayDays += "MON, ";
                     break;
-                case 2:
+                case 3:
                     displayDays += "TUE, ";
                     break;
-                case 3:
+                case 4:
                     displayDays += "WED, ";
                     break;
-                case 4:
+                case 5:
                     displayDays += "THU, ";
                     break;
-                case 5:
+                case 6:
                     displayDays += "FRI, ";
                     break;
-                case 6:
+                case 7:
                     displayDays += "SAT, ";
                     break;
-                case 7:
+                case 1:
                     displayDays += "SUN, ";
                     break;
                 default:

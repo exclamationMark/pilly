@@ -36,7 +36,7 @@ public class AlarmHandler extends IntentService {
 
         String deviceResponse = "";
         try {
-            deviceResponse = fetchURL("http://192.168.1.3:5000/mustissuewarning/123");
+            deviceResponse = fetchURL("http://192.168.1.102:5000/mustissuewarning/123");
         }
         catch (IOException e) {
             e.printStackTrace();

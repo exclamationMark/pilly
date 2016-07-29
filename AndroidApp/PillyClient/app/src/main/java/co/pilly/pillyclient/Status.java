@@ -52,7 +52,7 @@ public class Status extends AppCompatActivity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://192.168.1.3:5000/getinfo/123");
+            new JessicaFetcher().execute("http://192.168.1.102:5000/getinfo/123");
         }
         else {
             Log.d("Status", "WARNING: No connection available");

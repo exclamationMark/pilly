@@ -60,25 +60,25 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
             for(int day : alert.getDays()) {
                 ToggleButton toggleButton;
                 switch(day) {
-                    case 1:
+                    case 2:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_monday);
                         break;
-                    case 2:
+                    case 3:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_tuesday);
                         break;
-                    case 3:
+                    case 4:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_wednesday);
                         break;
-                    case 4:
+                    case 5:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_thursday);
                         break;
-                    case 5:
+                    case 6:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_friday);
                         break;
-                    case 6:
+                    case 7:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_saturday);
                         break;
-                    case 7:
+                    case 1:
                         toggleButton = (ToggleButton) findViewById(R.id.toggle_sunday);
                         break;
                     default:
@@ -164,25 +164,25 @@ public class NewAlert extends AppCompatActivity implements TimePickerDialog.OnTi
         ArrayList<Integer> daysList = new ArrayList<>();
         ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggle_monday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(1));
+            daysList.add(Integer.valueOf(2));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_tuesday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(2));
+            daysList.add(Integer.valueOf(3));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_wednesday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(3));
+            daysList.add(Integer.valueOf(4));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_thursday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(4));
+            daysList.add(Integer.valueOf(5));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_friday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(5));
+            daysList.add(Integer.valueOf(6));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_saturday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(6));
+            daysList.add(Integer.valueOf(7));
         toggleButton = (ToggleButton) findViewById(R.id.toggle_sunday);
         if(toggleButton.isChecked())
-            daysList.add(Integer.valueOf(7));
+            daysList.add(Integer.valueOf(1));
         Integer[] daysArray = daysList.toArray(new Integer[daysList.size()]);
         int[] intDaysArray = new int[daysArray.length];
         for(int i = 0; i < daysArray.length; i++)

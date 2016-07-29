@@ -24,8 +24,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
 
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
@@ -171,7 +169,6 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                     aList.set(listView.getCheckedItemPosition(), receivedAlert);
                     break;
                 case NewAlert.ACTION_ADD:
-                    //receivedAlert.setPendingIntent(newAlarmPendingIntent);
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), newAlarmPendingIntent);
                     aList.add(receivedAlert);
                     break;
@@ -191,17 +188,28 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         return aList;
     }
 
+    public static PillAlert getEarliestAlert(ArrayList<PillAlert> aList) {
+        int index = 0;
+        long lowest = Long.MAX_VALUE;
+        for (int i = 0; i < aList.size(); i++)
+            if (aList.get(i).getNextTrigger() < lowest) {
+                lowest = aList.get(i).getNextTrigger();
+                index = i;
+            }
+        return aList.get(index);
+    }
+
     private void saveAlertsToPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         int alertNumber = sharedPreferences.getInt("alertNumber", 0);
-        for(int i = 0; i < alertNumber; i++)
+        for (int i = 0; i < alertNumber; i++)
             editor.remove("alert_" + i);
         editor.remove("alertNumber");
 
         editor.putInt("alertNumber", aList.size());
-        for(int i = 0; i < aList.size(); i++)
+        for (int i = 0; i < aList.size(); i++)
             editor.putString("alert_" + i, aList.get(i).toString());
 
         editor.commit();

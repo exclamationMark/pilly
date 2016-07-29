@@ -1,12 +1,14 @@
 package co.pilly.pillyclient;
 
-import android.app.PendingIntent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Calendar;
 
 public class PillAlert implements Parcelable, Comparable<PillAlert> {
     private int hours;
@@ -53,6 +55,33 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         this.days = days;
     }
 
+    public long getNextTrigger() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        Arrays.sort(days); // TODO: check if needed
+        if (Arrays.asList(days).contains(calendar.get(Calendar.DAY_OF_WEEK))) {
+            if (calendar.get(Calendar.HOUR_OF_DAY)*100+calendar.get(Calendar.MINUTE) < hours*100 + minutes) {
+                calendar.set(Calendar.HOUR_OF_DAY, hours);
+                calendar.set(Calendar.MINUTE, minutes);
+                return calendar.getTimeInMillis() - System.currentTimeMillis();
+            }
+        }
+        int i;
+        for (i = 0; i < days.length; i++)
+            if (days[i] > calendar.get(Calendar.DAY_OF_WEEK))
+                break;
+        if(i < days.length) {
+            calendar.add(Calendar.DAY_OF_MONTH, days[i] - calendar.get(Calendar.DAY_OF_WEEK));
+            calendar.set(Calendar.HOUR_OF_DAY, hours);
+            calendar.set(Calendar.MINUTE, minutes);
+            return calendar.getTimeInMillis() - System.currentTimeMillis();
+        }
+        calendar.add(Calendar.DAY_OF_MONTH, days[0] + 7 - calendar.get(Calendar.DAY_OF_WEEK));
+        calendar.set(Calendar.HOUR_OF_DAY, hours);
+        calendar.set(Calendar.MINUTE, minutes);
+        return calendar.getTimeInMillis() - System.currentTimeMillis();
+    }
+
     // Parcelable overrides
 
     public int describeContents() {
@@ -92,6 +121,8 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         return thisValue - thatValue;
     }
 
+    // Override toString() so it returns a JSON describing the PillAlert object content
+
     public String toString() {
         StringBuilder stringBuffer = new StringBuilder("{");
         stringBuffer.append("\"hourOfDay\" : ");
@@ -110,6 +141,8 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
 
         return stringBuffer.toString();
     }
+
+    // Create a PillAlert object from a JSON string
 
     public static PillAlert fromString(String JSON) {
         JSONObject jsonObject;

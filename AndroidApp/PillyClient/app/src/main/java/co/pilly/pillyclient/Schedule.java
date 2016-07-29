@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Set;
 
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
@@ -39,20 +41,21 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        aList = getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
+
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        PillAlert[] alerts = new PillAlert[2];
-        alerts[1] = new PillAlert(8, 30, 1, new int[]{1, 3});
-        alerts[0] = new PillAlert(21, 30, 2, new int[]{1, 3, 5, 6, 7});
-        aList = new ArrayList<>(2);
-        for (int i = 0; i < alerts.length; i++)
-            aList.add(alerts[i]);
-        Collections.sort(aList);
         listView = (ListView) findViewById(R.id.schedule_list);
         scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList, Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf"));
         listView.setAdapter(scheduleAdapter);
         listView.setOnItemLongClickListener(this);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveAlertsToPreferences();
     }
 
     @Override
@@ -80,7 +83,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                 Intent intent = new Intent(this, NewAlert.class);
                 intent.putExtra(EXTRA_ADD, true);
                 startActivityForResult(intent, NewAlert.ACTION_ADD);
-                if(mActionMode != null)
+                if (mActionMode != null)
                     mActionMode.finish();
                 return true;
             case R.id.home:
@@ -112,7 +115,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                 intent.putExtra(EXTRA_ADD, false);
                 intent.putExtra(EXTRA_PILLALERT, toEdit);
                 startActivityForResult(intent, NewAlert.ACTION_EDIT);
-                if(mActionMode != null)
+                if (mActionMode != null)
                     mActionMode.finish();
                 return true;
             case R.id.info:
@@ -124,7 +127,7 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                         .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                if(mActionMode != null)
+                                if (mActionMode != null)
                                     mActionMode.finish();
                                 scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
                             }
@@ -152,22 +155,24 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == NewAlert.RESULT_SAVE) {
             PillAlert receivedAlert = data.getParcelableExtra(EXTRA_PILLALERT);
-            /* Intent intent = new Intent(this, Schedule.class);
+            Intent intent = new Intent(this, AlarmHandler.class);
+            intent.putExtra(Schedule.EXTRA_PILLALERT, receivedAlert);
+            PendingIntent newAlarmPendingIntent = PendingIntent.getService(this, 0, intent, 0);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.setTimeInMillis(System.currentTimeMillis()); // Used to set the current date other than hor and minute
             calendar.set(Calendar.HOUR_OF_DAY, receivedAlert.getHours());
-            calendar.set(Calendar.MINUTE, receivedAlert.getMinutes()); */
-            // TODO: Build an alarm receiver
+            calendar.set(Calendar.MINUTE, receivedAlert.getMinutes());
             switch (requestCode) {
                 case NewAlert.ACTION_EDIT:
                     /* alarmManager.cancel(receivedAlert.getPendingIntent());
-                    receivedAlert.setPendingIntent(PendingIntent.getBroadcast(this, 0, intent, 0));
+                    receivedAlert.setPendingIntent(newAlarmPendingIntent);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), receivedAlert.getPendingIntent());*/
+
                     aList.set(listView.getCheckedItemPosition(), receivedAlert);
                     break;
                 case NewAlert.ACTION_ADD:
-                    /* receivedAlert.setPendingIntent(PendingIntent.getBroadcast(this, 0, intent, 0));
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), receivedAlert.getPendingIntent()); */
+                    //receivedAlert.setPendingIntent(newAlarmPendingIntent);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), newAlarmPendingIntent);
                     aList.add(receivedAlert);
                     break;
             }
@@ -177,9 +182,34 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         }
     }
 
+    public static ArrayList<PillAlert> getSavedAlerts(SharedPreferences sharedPreferences) {
+        ArrayList<PillAlert> aList = new ArrayList<>();
+        int jsonArraySize = sharedPreferences.getInt("alertNumber", 0);
+        for (int i = 0; i < jsonArraySize; i++)
+            aList.add(PillAlert.fromString(sharedPreferences.getString("alert_" + i, null)));
+        Collections.sort(aList);
+        return aList;
+    }
+
+    private void saveAlertsToPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        int alertNumber = sharedPreferences.getInt("alertNumber", 0);
+        for(int i = 0; i < alertNumber; i++)
+            editor.remove("alert_" + i);
+        editor.remove("alertNumber");
+
+        editor.putInt("alertNumber", aList.size());
+        for(int i = 0; i < aList.size(); i++)
+            editor.putString("alert_" + i, aList.get(i).toString());
+
+        editor.commit();
+    }
+
     ActionMode mActionMode;
     ListView listView;
     ScheduleAdapter scheduleAdapter;
-    ArrayList<PillAlert> aList;
+    ArrayList<PillAlert> aList = null;
     AlarmManager alarmManager;
 }

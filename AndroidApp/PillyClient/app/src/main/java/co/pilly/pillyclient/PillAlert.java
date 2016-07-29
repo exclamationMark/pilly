@@ -4,19 +4,21 @@ import android.app.PendingIntent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PillAlert implements Parcelable, Comparable<PillAlert> {
     private int hours;
     private int minutes;
     private int quantity;
     private int[] days;
-    private PendingIntent pendingIntent;
 
     public PillAlert(int hours, int minutes, int quantity, int[] days) {
         this.hours = hours;
         this.minutes = minutes;
         this.quantity = quantity;
         this.days = days;
-        this.pendingIntent = null;
     }
 
     public int getHours() {
@@ -49,14 +51,6 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
 
     public void setDays(int[] days) {
         this.days = days;
-    }
-
-    public PendingIntent getPendingIntent() {
-        return pendingIntent;
-    }
-
-    public void setPendingIntent(PendingIntent pendingIntent) {
-        this.pendingIntent = pendingIntent;
     }
 
     // Parcelable overrides
@@ -96,5 +90,51 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         int thisValue = this.getHours() * 100 + this.getMinutes();
         int thatValue = o.getHours() * 100 + o.getMinutes();
         return thisValue - thatValue;
+    }
+
+    public String toString() {
+        StringBuilder stringBuffer = new StringBuilder("{");
+        stringBuffer.append("\"hourOfDay\" : ");
+        stringBuffer.append(hours);
+        stringBuffer.append(" , \"minutes\" : ");
+        stringBuffer.append(minutes);
+        stringBuffer.append(", \"quantity\" : ");
+        stringBuffer.append(quantity);
+        stringBuffer.append(", \"days\" : [");
+        for(int i = 0; i < days.length; i++) {
+            stringBuffer.append(days[i]);
+            stringBuffer.append(",");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.length()-1);
+        stringBuffer.append("]}");
+
+        return stringBuffer.toString();
+    }
+
+    public static PillAlert fromString(String JSON) {
+        JSONObject jsonObject;
+
+        if(JSON == null)
+            return null;
+
+        try {
+            jsonObject = new JSONObject(JSON);
+            JSONArray jdaysArray = jsonObject.getJSONArray("days");
+
+            int h,m,q;
+            int[] d = new int[jdaysArray.length()];
+
+            h = jsonObject.getInt("hourOfDay");
+            m = jsonObject.getInt("minutes");
+            q = jsonObject.getInt("quantity");
+            for(int i = 0; i < jdaysArray.length(); i++)
+                d[i] = jdaysArray.getInt(i);
+
+            return new PillAlert(h, m, q, d);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

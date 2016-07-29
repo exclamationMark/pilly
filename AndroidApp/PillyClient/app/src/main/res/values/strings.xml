@@ -1,4 +1,5 @@
 <resources>
+    <string name="preferences_file_key">co.pilly.pillyclient.PREFERENCES_FILE_KEY</string>
     <string name="app_name">Pilly</string>
     <string name="login">Login</string>
     <string name="schedule">Schedule</string>
@@ -33,4 +34,5 @@
     <string name="sunday_init">S</string>
     <string name="no_days_selected">Please select at least one day</string>
     <string name="all_events">All events</string>
+    <string name="no_schedule">No alerts scheduled. Tap + to add one.</string>
 </resources>

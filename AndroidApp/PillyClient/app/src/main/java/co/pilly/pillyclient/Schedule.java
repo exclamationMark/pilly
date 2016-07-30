@@ -22,7 +22,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
@@ -143,6 +142,9 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                                     alarmManager.cancel(pendingIntent);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), pendingIntent);
                                 } else {
+                                    Intent intent = new Intent(getApplicationContext(), AlarmHandler.class);
+                                    PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), ALARM_INTENT_ID, intent, 0);
+                                    alarmManager.cancel(pendingIntent);
                                     getSupportFragmentManager().beginTransaction()
                                             .replace(R.id.schedule_fragment_container, new NoScheduleFragment()).commit();
                                 }

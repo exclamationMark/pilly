@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/info"
-        android:icon="@drawable/ic_info_outline_black_24dp"
-        android:title="@string/info"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/edit"
         android:icon="@drawable/ic_mode_edit_black_24dp"
         android:title="@string/edit"

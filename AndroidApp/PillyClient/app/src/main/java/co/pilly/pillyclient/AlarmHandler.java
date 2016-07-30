@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -36,7 +38,14 @@ public class AlarmHandler extends IntentService {
 
         String deviceResponse = "";
         try {
-            deviceResponse = fetchURL("http://192.168.1.4:5000/mustissuewarning/123");
+            ConnectivityManager connectivityManager =
+                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                deviceResponse = fetchURL("http://192.168.1.4:5000/mustissuewarning/123");
+            } else {
+                Log.d("AlarmManager", "No connection available");
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +57,6 @@ public class AlarmHandler extends IntentService {
             if (alert == null) {
                 // alert is null, using backup
                 alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
                 // I can't see this ever being null (as always have a default notification)
                 // but just in case
                 if (alert == null) {

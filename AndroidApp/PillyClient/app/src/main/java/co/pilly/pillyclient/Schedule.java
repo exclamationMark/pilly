@@ -41,14 +41,20 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         aList = getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
-
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        listView = (ListView) findViewById(R.id.schedule_list);
         scheduleAdapter = new ScheduleAdapter(this, R.layout.list_element, aList, Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf"));
-        listView.setAdapter(scheduleAdapter);
-        listView.setOnItemLongClickListener(this);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        if(findViewById(R.id.schedule_fragment_container) != null) {
+            if (savedInstanceState != null)
+                return;
+
+            if(aList.size() == 0)
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.schedule_fragment_container, new NoScheduleFragment()).commit();
+            else
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.schedule_fragment_container, new ScheduleFragment()).commit();
+        }
     }
 
     @Override
@@ -128,12 +134,18 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                             public void onClick(DialogInterface dialog, int id) {
                                 if (mActionMode != null)
                                     mActionMode.finish();
-                                scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
-                                Intent intent = new Intent(getApplicationContext(), AlarmHandler.class);
-                                intent.putExtra(EXTRA_PILLALERT, getEarliestAlert(aList));
-                                PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), ALARM_INTENT_ID, intent, 0);
-                                alarmManager.cancel(pendingIntent);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), pendingIntent);
+                                aList.remove(listView.getCheckedItemPosition());
+                                scheduleAdapter.notifyDataSetChanged();
+                                if (aList.size() != 0) {
+                                    Intent intent = new Intent(getApplicationContext(), AlarmHandler.class);
+                                    intent.putExtra(EXTRA_PILLALERT, getEarliestAlert(aList));
+                                    PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), ALARM_INTENT_ID, intent, 0);
+                                    alarmManager.cancel(pendingIntent);
+                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), pendingIntent);
+                                } else {
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.schedule_fragment_container, new NoScheduleFragment()).commit();
+                                }
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -167,6 +179,9 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                     break;
                 case NewAlert.ACTION_ADD:
                     aList.add(receivedAlert);
+                    if (aList.size() == 1)
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.schedule_fragment_container, new ScheduleFragment()).commit();
                     break;
             }
             intent.putExtra(EXTRA_PILLALERT, getEarliestAlert(aList));
@@ -213,6 +228,13 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
             editor.putString("alert_" + i, aList.get(i).toString());
 
         editor.commit();
+    }
+
+    public void setListView(ListView listView) {
+        this.listView = listView;
+        this.listView.setAdapter(this.scheduleAdapter);
+        this.listView.setOnItemLongClickListener(this);
+        this.listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     ActionMode mActionMode;

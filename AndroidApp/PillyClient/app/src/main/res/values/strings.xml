@@ -35,6 +35,6 @@
     <string name="sunday_init">S</string>
     <string name="no_days_selected">Please select at least one day</string>
     <string name="all_events">All events</string>
-    <string name="no_schedule">No alerts scheduled. Tap + to add one.</string>
+    <string name="no_schedule">No alerts scheduled.\nTap + to add one.</string>
     <string name="snooze">Snooze</string>
 </resources>

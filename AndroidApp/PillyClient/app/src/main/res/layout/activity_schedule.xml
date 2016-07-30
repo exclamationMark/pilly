@@ -18,12 +18,9 @@
         app:subtitleTextColor="@color/lightest"
         app:titleTextColor="@color/lightest" />
 
-    <ListView
-        android:id="@+id/schedule_list"
+    <FrameLayout
+        android:id="@+id/schedule_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/light"
-        android:dividerHeight="0.5pt">
-    </ListView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

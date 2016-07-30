@@ -2,7 +2,10 @@ package co.pilly.pillyclient;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -63,6 +66,12 @@ public class AlarmScreen extends AppCompatActivity { // TODO: Add broadcast rece
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), alert);
         ringtone.play();
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        screenLockReceiver = new ScreenLockReceiver();
+        registerReceiver(screenLockReceiver, filter);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
                 + WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
@@ -72,9 +81,11 @@ public class AlarmScreen extends AppCompatActivity { // TODO: Add broadcast rece
     @Override
     public void onPause() {
         super.onPause();
-        if(this.isFinishing())
-            if(ringtone.isPlaying())
+        if(this.isFinishing()) {
+            if (ringtone.isPlaying())
                 ringtone.stop();
+            unregisterReceiver(screenLockReceiver);
+        }
     }
 
     private void hideNavigationBar() {
@@ -89,6 +100,22 @@ public class AlarmScreen extends AppCompatActivity { // TODO: Add broadcast rece
         finish();
     }
 
+    public class ScreenLockReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (ringtone.isPlaying())
+                    ringtone.stop();
+            }
+
+            else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                ringtone.play();
+            }
+        }
+    }
+
     PillAlert pillAlert;
     Ringtone ringtone;
+    BroadcastReceiver screenLockReceiver;
 }

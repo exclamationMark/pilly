@@ -19,12 +19,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void login(View view) {
-        Intent intent = new Intent(this, AlarmHandler.class);
-        intent.putExtra(Schedule.EXTRA_PILLALERT, new PillAlert(12,30,2,new int[]{1,2}));
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, intent, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent);
-        Log.d("Login", "Alarm set");
-        //startActivity(intent);
+        Intent intent = new Intent(this, Status.class);
+        startActivity(intent);
     }
 }

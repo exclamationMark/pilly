@@ -59,13 +59,15 @@ public class AlarmHandler extends IntentService {
             alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
             alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getApplicationContext().startActivity(alarmIntent);
-        } else {
+        } else if (deviceResponse.equals("0")) {
             Intent nextIntent = new Intent(this, AlarmHandler.class);
             nextIntent.putExtra(Schedule.EXTRA_PILLALERT, Schedule.getEarliestAlert(aList));
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, nextIntent, 0);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, Schedule.getEarliestAlert(aList).getNextTrigger() , pendingIntent);
             Log.d("AlarmManager", "Next alarm set");
+        } else {
+            Log.e("AlarmManager", "Unknown device response");
         }
     }
 

@@ -82,9 +82,7 @@ public class Status extends AppCompatActivity {
     }
 
     public void onEventClick(View view) {
-        //Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, AlarmHandler.class);
-        startService(intent);
+        Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
     }
 
     private class JessicaFetcher extends AsyncTask<String, Void, String> {

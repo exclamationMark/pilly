@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +38,7 @@ public class AlarmHandler extends IntentService {
         // ArrayList<PillAlert> pillAlerts = Schedule.getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
 
         String deviceResponse = "";
-        try {
+        /*try {
             ConnectivityManager connectivityManager =
                     (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -50,48 +51,13 @@ public class AlarmHandler extends IntentService {
         catch (IOException e) {
             e.printStackTrace();
             Log.d("AlarmHandler", "IOException caught");
-        }
+        }*/
 
-        if(deviceResponse.equals("1")) { // TODO: Extend condition or something
-            Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            if (alert == null) {
-                // alert is null, using backup
-                alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                // I can't see this ever being null (as always have a default notification)
-                // but just in case
-                if (alert == null) {
-                    // alert backup is null, using 2nd backup
-                    alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                }
-            }
-            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), alert);
-            ringtone.play();
-
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.ic_info_outline_black_24dp)
-                            .setContentTitle("Take your pills!")
-                            .setContentText(pillAlert.getQuantity() + " of them.")
-                            .setAutoCancel(true);
-            Intent resultIntent = new Intent(this, Status.class);
-            PendingIntent resultPendingIntent =
-                    PendingIntent.getActivity(
-                            this,
-                            0,
-                            resultIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(001, mBuilder.build());
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (ringtone.isPlaying())
-                ringtone.stop();
+        if(deviceResponse.equals("")) { // TODO: Extend condition or something
+            Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
+            alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
+            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getApplicationContext().startActivity(alarmIntent);
         }
     }
 

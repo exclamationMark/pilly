@@ -59,7 +59,7 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         Arrays.sort(days); // TODO: check if needed
-        if (Arrays.asList(days).contains(calendar.get(Calendar.DAY_OF_WEEK))) {
+        if (contains(days, calendar.get(Calendar.DAY_OF_WEEK))) {
             if (calendar.get(Calendar.HOUR_OF_DAY)*100+calendar.get(Calendar.MINUTE) < hours*100 + minutes) {
                 calendar.set(Calendar.HOUR_OF_DAY, hours);
                 calendar.set(Calendar.MINUTE, minutes);
@@ -80,6 +80,13 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
         calendar.set(Calendar.HOUR_OF_DAY, hours);
         calendar.set(Calendar.MINUTE, minutes);
         return calendar.getTimeInMillis();
+    }
+
+    public boolean contains(int[] days, int target) {
+        for (int day : days)
+            if (target == day)
+                return true;
+        return false;
     }
 
     // Parcelable overrides

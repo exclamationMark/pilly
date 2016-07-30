@@ -129,6 +129,11 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
                                 if (mActionMode != null)
                                     mActionMode.finish();
                                 scheduleAdapter.remove((PillAlert) listView.getItemAtPosition(listView.getCheckedItemPosition()));
+                                Intent intent = new Intent(getApplicationContext(), AlarmHandler.class);
+                                intent.putExtra(EXTRA_PILLALERT, getEarliestAlert(aList));
+                                PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), ALARM_INTENT_ID, intent, 0);
+                                alarmManager.cancel(pendingIntent);
+                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), pendingIntent);
                             }
                         })
                         .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -155,26 +160,19 @@ public class Schedule extends AppCompatActivity implements ActionMode.Callback, 
         if (resultCode == NewAlert.RESULT_SAVE) {
             PillAlert receivedAlert = data.getParcelableExtra(EXTRA_PILLALERT);
             Intent intent = new Intent(this, AlarmHandler.class);
-            intent.putExtra(Schedule.EXTRA_PILLALERT, receivedAlert);
-            PendingIntent newAlarmPendingIntent = PendingIntent.getService(this, ALARM_INTENT_ID, intent, 0);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis()); // Used to set the current date other than hor and minute
-            calendar.set(Calendar.HOUR_OF_DAY, receivedAlert.getHours());
-            calendar.set(Calendar.MINUTE, receivedAlert.getMinutes());
+            PendingIntent pendingIntent;
             switch (requestCode) {
                 case NewAlert.ACTION_EDIT:
-                    /* alarmManager.cancel(receivedAlert.getPendingIntent());
-                    receivedAlert.setPendingIntent(newAlarmPendingIntent);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), receivedAlert.getPendingIntent());*/
-
                     aList.set(listView.getCheckedItemPosition(), receivedAlert);
                     break;
                 case NewAlert.ACTION_ADD:
-                    alarmManager.cancel(newAlarmPendingIntent);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), newAlarmPendingIntent);
                     aList.add(receivedAlert);
                     break;
             }
+            intent.putExtra(EXTRA_PILLALERT, getEarliestAlert(aList));
+            pendingIntent = PendingIntent.getService(this, ALARM_INTENT_ID, intent, 0);
+            alarmManager.cancel(pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, getEarliestAlert(aList).getNextTrigger(), pendingIntent);
             Collections.sort(aList);
             scheduleAdapter.notifyDataSetChanged();
             Toast.makeText(this, getResources().getString(R.string.alert_saved), Toast.LENGTH_SHORT).show();

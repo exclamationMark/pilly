@@ -26,7 +26,7 @@ import java.util.Collections;
 
 public class Schedule extends AppCompatActivity implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     public static final String EXTRA_PILLALERT = "co.pilly.pillyclient.EXTRA_PILLALERT";
-    public static final String EXTRA_ADD = "co.pilli.pilliclient.EXTRA_ADD";
+    public static final String EXTRA_ADD = "co.pilly.pilliclient.EXTRA_ADD";
     public static final int ALARM_INTENT_ID = 11596;
 
     @Override

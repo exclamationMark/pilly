@@ -1,5 +1,6 @@
 package co.pilly.pillyclient;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -13,11 +14,12 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class AlarmScreen extends AppCompatActivity { // TODO: Add broadcast receiver to stop ringtone on screen lock
+public class AlarmScreen extends AppCompatActivity {
 
     public static final String EXTRA_PILLQTY = "co.pilly.pillyclient.EXTRA_PILLQTY";
 
@@ -84,7 +86,15 @@ public class AlarmScreen extends AppCompatActivity { // TODO: Add broadcast rece
         if(this.isFinishing()) {
             if (ringtone.isPlaying())
                 ringtone.stop();
+
             unregisterReceiver(screenLockReceiver);
+
+            Intent nextIntent = new Intent(this, AlarmHandler.class);
+            nextIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, nextIntent, 0);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10 * 60 * 1000, pendingIntent);
+            Log.d("AlarmScreen", "Snoozed. Next alarm in 10 mins");
         }
     }
 

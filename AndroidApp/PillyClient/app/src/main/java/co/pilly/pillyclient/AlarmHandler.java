@@ -1,5 +1,6 @@
 package co.pilly.pillyclient;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,10 +36,10 @@ public class AlarmHandler extends IntentService {
         // Handle shit
         Log.d("AlarmHandler", "Handling intent " + intent.toString());
         PillAlert pillAlert = intent.getParcelableExtra(Schedule.EXTRA_PILLALERT);
-        // ArrayList<PillAlert> pillAlerts = Schedule.getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
+        ArrayList<PillAlert> aList = Schedule.getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
 
         String deviceResponse = "";
-        /*try {
+        try {
             ConnectivityManager connectivityManager =
                     (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -51,13 +52,20 @@ public class AlarmHandler extends IntentService {
         catch (IOException e) {
             e.printStackTrace();
             Log.d("AlarmHandler", "IOException caught");
-        }*/
+        }
 
-        if(deviceResponse.equals("")) { // TODO: Extend condition or something
+        if(deviceResponse.equals("1")) {
             Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
             alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
             alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getApplicationContext().startActivity(alarmIntent);
+        } else {
+            Intent nextIntent = new Intent(this, AlarmHandler.class);
+            nextIntent.putExtra(Schedule.EXTRA_PILLALERT, Schedule.getEarliestAlert(aList));
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, nextIntent, 0);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Schedule.getEarliestAlert(aList).getNextTrigger() , pendingIntent);
+            Log.d("AlarmManager", "Next alarm set");
         }
     }
 

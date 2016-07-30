@@ -58,7 +58,7 @@ public class PillAlert implements Parcelable, Comparable<PillAlert> {
     public long getNextTrigger() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        Arrays.sort(days); // TODO: check if needed
+        Arrays.sort(days);
         if (contains(days, calendar.get(Calendar.DAY_OF_WEEK))) {
             if (calendar.get(Calendar.HOUR_OF_DAY)*100+calendar.get(Calendar.MINUTE) < hours*100 + minutes) {
                 calendar.set(Calendar.HOUR_OF_DAY, hours);

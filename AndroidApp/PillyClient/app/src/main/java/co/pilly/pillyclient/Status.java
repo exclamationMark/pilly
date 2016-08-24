@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Status extends AppCompatActivity {
+public class Status extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,9 @@ public class Status extends AppCompatActivity {
         }
         else {
             Log.d("Status", "WARNING: No connection available");
+            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new NetErrorFragment()).commit();
         }
     }
 
@@ -94,6 +97,8 @@ public class Status extends AppCompatActivity {
             catch (IOException e) {
                 e.printStackTrace();
                 Log.d("JessicaFetcher", "Caught IOException");
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new NetErrorFragment()).commit();
                 return "Error";
             }
         }
@@ -149,4 +154,27 @@ public class Status extends AppCompatActivity {
             }
         }
     }
+
+    public void setNetErrorLabel(TextView netErrorLabel) {
+        this.netErrorLabel = netErrorLabel;
+        this.netErrorLabel.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        ConnectivityManager connectivityManager =   // Start fetching user data
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new JessicaFetcher().execute("http://192.168.1.4:5000/getinfo/123");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new LoadingFragment()).commit();
+        }
+        else {
+            Log.d("Status", "WARNING: No connection available");
+            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    TextView netErrorLabel;
 }

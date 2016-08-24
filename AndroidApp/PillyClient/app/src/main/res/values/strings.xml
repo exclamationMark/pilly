@@ -37,4 +37,6 @@
     <string name="all_events">All events</string>
     <string name="no_schedule">No alerts scheduled.\nTap + to add one.</string>
     <string name="snooze">Snooze</string>
+    <string name="net_error">Unable to retrieve user data.\nTap to try again.</string>
+    <string name="no_connection">No connection detected. Check your settings.</string>
 </resources>

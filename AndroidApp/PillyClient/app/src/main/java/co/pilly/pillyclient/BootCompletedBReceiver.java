@@ -20,11 +20,13 @@ public class BootCompletedBReceiver extends BroadcastReceiver{
             ArrayList<PillAlert> aList = Schedule.getSavedAlerts(
                     context.getSharedPreferences(context.getResources().getString(R.string.preferences_file_key),
                             Context.MODE_PRIVATE));
-            PillAlert nextAlert = Schedule.getEarliestAlert(aList);
-            Intent nextAlarmIntent = new Intent(context, AlarmHandler.class);
-            intent.putExtra(Schedule.EXTRA_PILLALERT, nextAlert);
-            PendingIntent nextPendingIntent = PendingIntent.getService(context, Schedule.ALARM_INTENT_ID, nextAlarmIntent, 0);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlert.getNextTrigger(), nextPendingIntent);
+            if (aList.size() > 0) {
+                PillAlert nextAlert = Schedule.getEarliestAlert(aList);
+                Intent nextAlarmIntent = new Intent(context, AlarmHandler.class);
+                intent.putExtra(Schedule.EXTRA_PILLALERT, nextAlert);
+                PendingIntent nextPendingIntent = PendingIntent.getService(context, Schedule.ALARM_INTENT_ID, nextAlarmIntent, 0);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextAlert.getNextTrigger(), nextPendingIntent);
+            }
         }
     }
 }

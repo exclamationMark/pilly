@@ -11,8 +11,11 @@ configFileName = 'serverConfig.json'
 class Pilly(object):
 	global pillies
 	
+	pid = 0 # Maybe not necessary
 	description = "Dad's heart pills"
-	pillCount = 0
+	pillCount = 0 # Also maybe not necessary
+	pillWeight = 1
+	history = []
 
 	def __init__(self, pid):
 		self.pid = pid
@@ -31,9 +34,9 @@ class Pilly(object):
 		try:
 			with open(config['saveFilePath'] + fileName, 'r') as infile:
 				fileData = json.load(infile)
+				self.pillCount = fileData['pillCount']
 				self.pillWeight = fileData['pillWeight']
 				self.description = fileData['description']
-				self.schedule = fileData['schedule']
 				self.history = fileData['history']
 		except:
 			print "no file! creating new pilly!"
@@ -47,20 +50,22 @@ class Pilly(object):
 	def status(self):
 		response = {}
 		response['description'] = self.description
-		#response['nextPillTime'] = self.nextPillTime()
 		response['pillCount'] = self.pillCount
 		response['status'] = "ok"
 		response['recent'] = [['4 hours ago', 'taken on time'],['yesterday 20:14', 'taken on time'],['yestarday 10:38', 'taken 2h late'],['2 days ago 20:08', 'taken on time'],['2 days ago 08:02', 'taken on time']]
 		return response
 
-	def nextPillTime(self):
-		return 41
-
 	def notifyCaretaker(self):
 		return ""
 
 	def setPillCount(self, pillCount):
-		self.pillCount = pillCount;
+		diff = pillCount - self.pillCount
+		self.pillCount = pillCount
+		if diff != 0:
+			event = {}
+			event["time"] = time.time()
+			event["pillDelta"] = diff
+			self.history.append(event)
 		self.saveFile()
 
 @app.route('/status/<pid>')
@@ -71,10 +76,9 @@ def status(pid):
 @app.route('/updatePillCount/<pid>/<pillCount>')
 def updatePillCount(pid, pillCount):
 	p = Pilly.get(pid)
-	p.setPillCount(pillCount)
+	p.setPillCount(int(pillCount))
 	return json.dumps({'response':'ok'})
 
-#int main(){ herp derp
 if __name__ == "__main__":
 	try:
 		with open (configFileName, 'r') as configFile:

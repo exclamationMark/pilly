@@ -1,5 +1,6 @@
 package co.pilly.pillyclient;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,15 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class StatusFragment extends Fragment{
+import java.util.ArrayList;
+
+public class StatusFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_status, container, false);
+        ArrayList<PillAlert> aList = Schedule.getSavedAlerts(getActivity().getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
 
         try {
             TextView Description = (TextView) mView.findViewById(R.id.description);
@@ -28,14 +33,22 @@ public class StatusFragment extends Fragment{
             PillCount.setTypeface(light);
 
             TextView NextPillTime = (TextView) mView.findViewById(R.id.nextpill);
-            int next = jsonObject.getInt("nextPillTime");
-            if(next < 30)
-                NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_min), next));
-            else if (next < 90)
-                NextPillTime.setText(getResources().getText(R.string.next_pill_hr));
-            else {
-                int hrs = (int)Math.round((float)next/60.0);
-                NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_hrs), hrs));
+            if (aList.size() > 0) {
+                long nextMillis = Schedule.getEarliestAlert(aList).getNextTrigger() - System.currentTimeMillis();
+                int next = (int) (nextMillis / (1000 * 60));
+                if (next < 30)
+                    NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_min), next));
+                else if (next < 90)
+                    NextPillTime.setText(getResources().getText(R.string.next_pill_hr));
+                else if (next < 1440) {
+                    int hrs = (int) Math.round((float) next / 60.0);
+                    NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_hrs), hrs));
+                } else {
+                    int days = (int) Math.round((float) next / 1440);
+                    NextPillTime.setText(String.format(getResources().getString(R.string.next_pill_days), days));
+                }
+            } else {
+                NextPillTime.setText(getResources().getString(R.string.no_next_pill));
             }
 
             TextView Date1 = (TextView) mView.findViewById(R.id.timestamp1);
@@ -49,18 +62,19 @@ public class StatusFragment extends Fragment{
             TextView Event4 = (TextView) mView.findViewById(R.id.event4);
             TextView Event5 = (TextView) mView.findViewById(R.id.event5);
 
-            Date1.setText(jsonObject.getJSONArray("recent").getJSONObject(0).getString("date"));
-            Date2.setText(jsonObject.getJSONArray("recent").getJSONObject(1).getString("date"));
-            Date3.setText(jsonObject.getJSONArray("recent").getJSONObject(2).getString("date"));
-            Date4.setText(jsonObject.getJSONArray("recent").getJSONObject(3).getString("date"));
-            Date5.setText(jsonObject.getJSONArray("recent").getJSONObject(4).getString("date"));
-            Event1.setText(jsonObject.getJSONArray("recent").getJSONObject(0).getString("event"));
-            Event2.setText(jsonObject.getJSONArray("recent").getJSONObject(1).getString("event"));
-            Event3.setText(jsonObject.getJSONArray("recent").getJSONObject(2).getString("event"));
-            Event4.setText(jsonObject.getJSONArray("recent").getJSONObject(3).getString("event"));
-            Event5.setText(jsonObject.getJSONArray("recent").getJSONObject(4).getString("event"));
-        }
-        catch (JSONException e) {
+            JSONArray recent = jsonObject.getJSONArray("recent");
+
+            Date1.setText(recent.getJSONArray(0).getString(0));
+            Date2.setText(recent.getJSONArray(1).getString(0));
+            Date3.setText(recent.getJSONArray(2).getString(0));
+            Date4.setText(recent.getJSONArray(3).getString(0));
+            Date5.setText(recent.getJSONArray(4).getString(0));
+            Event1.setText(recent.getJSONArray(0).getString(1));
+            Event2.setText(recent.getJSONArray(1).getString(1));
+            Event3.setText(recent.getJSONArray(2).getString(1));
+            Event4.setText(recent.getJSONArray(3).getString(1));
+            Event5.setText(recent.getJSONArray(4).getString(1));
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

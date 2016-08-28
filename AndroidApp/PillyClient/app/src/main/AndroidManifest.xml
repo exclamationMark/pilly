@@ -41,7 +41,7 @@
             android:name=".AlarmHandler"
             android:exported="false" />
 
-        <activity android:name=".AlarmScreen"></activity>
+        <activity android:name=".AlarmScreen" />
     </application>
 
 </manifest>

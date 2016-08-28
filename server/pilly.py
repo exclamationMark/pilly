@@ -11,7 +11,7 @@ configFileName = 'serverConfig.json'
 class Pilly(object):
 	global pillies
 	
-	description = ''
+	description = "Dad's heart pills"
 	pillCount = 0
 
 	def __init__(self, pid):
@@ -47,7 +47,7 @@ class Pilly(object):
 	def status(self):
 		response = {}
 		response['description'] = self.description
-		response['nextPillTime'] = self.nextPillTime()
+		#response['nextPillTime'] = self.nextPillTime()
 		response['pillCount'] = self.pillCount
 		response['status'] = "ok"
 		response['recent'] = [['4 hours ago', 'taken on time'],['yesterday 20:14', 'taken on time'],['yestarday 10:38', 'taken 2h late'],['2 days ago 20:08', 'taken on time'],['2 days ago 08:02', 'taken on time']]
@@ -75,14 +75,15 @@ def updatePillCount(pid, pillCount):
 	return json.dumps({'response':'ok'})
 
 #int main(){ herp derp
-try:
-	with open (configFileName, 'r') as configFile:
-		config = json.load(configFile)
-except IOError:
-	print "Config file not found! Loading defaults"
-	config = {}
-	config['ip'] = '127.0.0.1'
-	config['port'] = 5000
-	config['debug'] = True
+if __name__ == "__main__":
+	try:
+		with open (configFileName, 'r') as configFile:
+			config = json.load(configFile)
+	except IOError:
+		print "Config file not found! Loading defaults"
+		config = {}
+		config['ip'] = '127.0.0.1'
+		config['port'] = 5000
+		config['debug'] = True
 
-app.run(config['ip'], config['port'], config['debug'])
+	app.run(config['ip'], config['port'], config['debug'])

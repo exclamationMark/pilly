@@ -81,6 +81,10 @@ class Pilly(object):
 		self.history[-eventId]["minutesFromSchedule"] = minutesFromSchedule
 		self.saveFile()
 
+@app.route('/')
+def home():
+	return json.dumps({'onFire' : 'False'})
+
 @app.route('/status/<pid>')
 def status(pid):
 	p = Pilly.get(pid)

@@ -49,7 +49,7 @@ public class AlarmHandler extends IntentService {
                     (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                deviceResponse = fetchURL("http://127.0.0.1:5000/getRecentUnchecked/123");
+                deviceResponse = fetchURL("http://130.237.3.216:5000/getRecentUnchecked/123");
                 uncheckedEvents = new JSONArray(deviceResponse);
             } else {
                 Log.d("AlarmManager", "No connection available");
@@ -67,7 +67,7 @@ public class AlarmHandler extends IntentService {
                 try {
                     int pillDelta = uncheckedEvents.getJSONObject(0).getInt("pillDelta");
                     if (pillDelta > 0) {
-                        deviceResponse = fetchURL("http://127.0.0.1:5000/setEventChecked/123/1/" + 0);
+                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + 0);
                         if (!deviceResponse.contains("ok")) {
                             Log.e("AlarmHandler", "Error while checking event.");
                         }
@@ -81,7 +81,7 @@ public class AlarmHandler extends IntentService {
                         long currentTimeMillis = System.currentTimeMillis();
                         long lastTriggerMillis = calendar.getTimeInMillis();
                         int minutes = ((int)(currentTimeMillis - lastTriggerMillis)) / 1000 / 60;
-                        deviceResponse = fetchURL("http://127.0.0.1:5000/setEventChecked/123/1/" + minutes);
+                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + minutes);
                         if (!deviceResponse.contains("ok")) {
                             Log.e("AlarmHandler", "Error while checking event.");
                         }
@@ -92,6 +92,8 @@ public class AlarmHandler extends IntentService {
                 catch (IOException|JSONException e) {
                     e.printStackTrace();
                 }
+            } else {
+
             }
         }
         /*{
@@ -117,6 +119,10 @@ public class AlarmHandler extends IntentService {
         alarmIntent.putExtra(Schedule.EXTRA_REMAINING, remaining);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(alarmIntent);
+    }
+
+    private void scheduleNextAlarm() {
+        
     }
 
     private String fetchURL(String destination) throws IOException {

@@ -52,7 +52,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://130.229.150.111:5000/status/123");
+            new JessicaFetcher().execute("http://130.237.3.216:5000/status/123");
         }
         else {
             Log.d("Status", "WARNING: No connection available");
@@ -166,7 +166,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://192.168.1.4:5000/getinfo/123");
+            new JessicaFetcher().execute("http://130.237.3.216:5000/getinfo/123");
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new LoadingFragment()).commit();
         }

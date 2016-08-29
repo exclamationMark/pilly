@@ -64,7 +64,7 @@ class Pilly(object):
 			event["time"] = long(time.time())
 			event["pillDelta"] = diff
 			event["pillCount"] = self.pillCount
-			event["minutesFromSchedule"] = ""
+			event["minutesFromSchedule"] = "N/D"
 			self.history.append(event)
 		self.saveFile()
 
@@ -72,10 +72,12 @@ class Pilly(object):
 		return self.history[-int(eventCount):]
 
 	def getRecentUnchecked(self):
+		if self.history[-1]["minutesFromSchedule"] != "N/D"
+			return []
 		i = 1
-		while self.history[-i]["minutesFromSchedule"] == "" and i < len(self.history):
+		while self.history[-i]["minutesFromSchedule"] == "N/D" and i < len(self.history):
 			i += 1
-		return self.history[-i+1:]
+		return self.history[-i:]
 
 	def setEventChecked(self, eventId, minutesFromSchedule):
 		self.history[-eventId]["minutesFromSchedule"] = minutesFromSchedule

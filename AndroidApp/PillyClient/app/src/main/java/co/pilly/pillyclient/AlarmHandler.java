@@ -73,44 +73,36 @@ public class AlarmHandler extends IntentService {
                         }
                         issueAlarm(pillAlert, pillAlert.getQuantity());
                     } else if (-pillDelta == pillAlert.getQuantity()) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(System.currentTimeMillis());
-                        calendar.set(Calendar.HOUR_OF_DAY, pillAlert.getHours());
-                        calendar.set(Calendar.MINUTE, pillAlert.getMinutes());
-                        calendar.set(Calendar.SECOND, 0);
-                        long currentTimeMillis = System.currentTimeMillis();
-                        long lastTriggerMillis = calendar.getTimeInMillis();
-                        int minutes = ((int)(currentTimeMillis - lastTriggerMillis)) / 1000 / 60;
-                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + minutes);
-                        if (!deviceResponse.contains("ok")) {
-                            Log.e("AlarmHandler", "Error while checking event.");
-                        }
-                    } else if () {
-
+                        setEventChecked(pillAlert, 1);
+                        scheduleNextAlarm(aList);
+                    } else if (-pillDelta > pillAlert.getQuantity()) {
+                        // Jimmy OD'd and died
+                    }
+                    else {
+                        issueAlarm(pillAlert, pillAlert.getQuantity() + pillDelta);
                     }
                 }
                 catch (IOException|JSONException e) {
                     e.printStackTrace();
                 }
             } else {
-
+                try {
+                    int totalDelta = 0;
+                    for(int i = 0; i < uncheckedEvents.length(); i++)
+                        totalDelta += uncheckedEvents.getJSONObject(i).getInt("pillDelta");
+                    if (-totalDelta == pillAlert.getQuantity()) {
+                        for(int i = 0; i < uncheckedEvents.length(); i++)
+                            setEventChecked(pillAlert, i);
+                    } else if (-totalDelta > pillAlert.getQuantity()) {
+                        // Jimmy OD'd and died
+                    } else {
+                        issueAlarm(pillAlert, pillAlert.getQuantity() + totalDelta);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        /*{
-            Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
-            alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
-            alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplicationContext().startActivity(alarmIntent);
-        } else if (deviceResponse.equals("0")) {
-            Intent nextIntent = new Intent(this, AlarmHandler.class);
-            nextIntent.putExtra(Schedule.EXTRA_PILLALERT, Schedule.getEarliestAlert(aList));
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, nextIntent, 0);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Schedule.getEarliestAlert(aList).getNextTrigger() , pendingIntent);
-            Log.d("AlarmManager", "Next alarm set");
-        } else {
-            Log.e("AlarmManager", "Unknown device response");
-        }*/
     }
 
     private void issueAlarm(PillAlert pillAlert, int remaining) {
@@ -121,8 +113,33 @@ public class AlarmHandler extends IntentService {
         getApplicationContext().startActivity(alarmIntent);
     }
 
-    private void scheduleNextAlarm() {
-        
+    private void scheduleNextAlarm(ArrayList<PillAlert> aList) {
+        Intent nextIntent = new Intent(this, AlarmHandler.class);
+        nextIntent.putExtra(Schedule.EXTRA_PILLALERT, Schedule.getEarliestAlert(aList));
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(this, Schedule.ALARM_INTENT_ID, nextIntent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, Schedule.getEarliestAlert(aList).getNextTrigger() , pendingIntent);
+        Log.d("AlarmManager", "Next alarm set");
+    }
+
+    private void setEventChecked(PillAlert pillAlert, int eventId) {
+        try {
+            String deviceResponse;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, pillAlert.getHours());
+            calendar.set(Calendar.MINUTE, pillAlert.getMinutes());
+            calendar.set(Calendar.SECOND, 0);
+            long currentTimeMillis = System.currentTimeMillis();
+            long lastTriggerMillis = calendar.getTimeInMillis();
+            int minutes = ((int) (currentTimeMillis - lastTriggerMillis)) / 1000 / 60;
+            deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/" + eventId + "/" + minutes);
+            if (!deviceResponse.contains("ok")) {
+                Log.e("AlarmHandler", "Error while checking event.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String fetchURL(String destination) throws IOException {

@@ -80,7 +80,11 @@ public class AlarmHandler extends IntentService {
                         scheduleNextAlarm(aList);
                     } else if (-pillDelta > pillAlert.getQuantity()) {
                         Log.d("AlarmHandler", "The user overdosed. DO SOMETHING FOR GOD'S SAKE!");
-                        // Jimmy OD'd and died
+                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + 0);
+                        if (!deviceResponse.contains("ok")) {
+                            Log.e("AlarmHandler", "Error while checking event.");
+                        }
+                        fireOverDoseWarning(-pillDelta - pillAlert.getQuantity());
                     }
                     else {
                         Log.d("AlarmHandler", "User didn't take enough pills. Issuing alarm...");
@@ -103,7 +107,9 @@ public class AlarmHandler extends IntentService {
                         scheduleNextAlarm(aList);
                     } else if (-totalDelta > pillAlert.getQuantity()) {
                         Log.d("AlarmHandler", "Multiple overdoses! OH MY GAWD!");
-                        // Jimmy OD'd and died
+                        for(int i = 0; i < uncheckedEvents.length(); i++)
+                            setEventChecked(pillAlert, i + 1);
+                        fireOverDoseWarning(-totalDelta - pillAlert.getQuantity());
                     } else {
                         Log.d("AlarmHandler", "Still not enough pills, Carl.");
                         issueAlarm(pillAlert, pillAlert.getQuantity() + totalDelta);
@@ -119,6 +125,13 @@ public class AlarmHandler extends IntentService {
         Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
         alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
         alarmIntent.putExtra(Schedule.EXTRA_REMAINING, remaining);
+        alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(alarmIntent);
+    }
+
+    private void fireOverDoseWarning(int odQuantity) {
+        Intent alarmIntent = new Intent(getApplicationContext(), OverdoseDetected.class);
+        alarmIntent.putExtra(Schedule.EXTRA_REMAINING, odQuantity);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(alarmIntent);
     }

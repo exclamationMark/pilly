@@ -43,5 +43,9 @@
     <string name="no_connection">No connection detected. Check your settings.</string>
     <string name="no_next_pill">No alarms scheduled yet.</string>
     <string name="notification_title">Take your pills</string>
-    <string name="notification_content">You still have to take %1$d pills.</string>
+    <string name="notification_content">You still have to take %1$d pill(s).</string>
+    <string name="overdose_title">Overdose detected!</string>
+    <string name="overdose_body">The user overdosed by %1$d pill(s).</string>
+    <string name="warning_snooze">Dismiss</string>
+    <string name="overdose_description">Your Pilly has detected\nan overdose by %1$d pill(s).</string>
 </resources>

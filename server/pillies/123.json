@@ -1,1 +1,1 @@
-{"pid": "123", "pillCount": 6}
+{"history": [{"pillDelta": 10, "minutesFromSchedule": "55", "time": 1472465864, "pillCount": 10}, {"pillDelta": -1, "pillCount": 9, "minutesFromSchedule": "5", "time": 1472466566}, {"pillDelta": -1, "pillCount": 8, "minutesFromSchedule": "", "time": 1472466568}, {"pillDelta": -2, "pillCount": 6, "minutesFromSchedule": "", "time": 1472466572}], "pillCount": 6, "pid": "123", "description": "Dad's heart pills", "pillWeight": 1}

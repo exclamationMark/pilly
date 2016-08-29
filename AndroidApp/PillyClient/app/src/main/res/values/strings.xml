@@ -16,6 +16,7 @@
     <string name="next_pill_hr">Next pill in one hour</string>
     <string name="loading">Loading info. Please wait&#8230;</string>
     <string name="quantity">Pills to take: %1$d</string>
+    <string name="remaining">Remaining: %1$d</string>
     <string name="pills_to_take">Pills to take</string>
     <string name="new_alarm">New</string>
     <string name="edit">Edit</string>

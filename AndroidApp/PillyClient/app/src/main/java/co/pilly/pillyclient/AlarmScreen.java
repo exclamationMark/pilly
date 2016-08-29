@@ -21,8 +21,6 @@ import android.widget.TextView;
 
 public class AlarmScreen extends AppCompatActivity {
 
-    public static final String EXTRA_PILLQTY = "co.pilly.pillyclient.EXTRA_PILLQTY";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +28,18 @@ public class AlarmScreen extends AppCompatActivity {
 
         hideNavigationBar();
 
-        pillAlert = getIntent().getParcelableExtra(Schedule.EXTRA_PILLALERT);
+        Intent intent = getIntent();
+        pillAlert = intent.getParcelableExtra(Schedule.EXTRA_PILLALERT);
+        int remaining = intent.getIntExtra(Schedule.EXTRA_REMAINING, 0);
+
         TextView alarmPillnr = (TextView) findViewById(R.id.alarm_pillnr);
-        Typeface light = Typeface.createFromAsset(getAssets(), "Roboto-Thin.ttf");
-        alarmPillnr.setTypeface(light);
-        alarmPillnr.setText(String.valueOf(pillAlert.getQuantity()));
+        TextView alarmRemaining = (TextView) findViewById(R.id.alarm_remaining);
+        alarmPillnr.setText(String.format(getResources().getString(R.string.quantity), pillAlert.getQuantity()));
+        if (remaining > 0)
+            alarmRemaining.setText(String.format(getResources().getString(R.string.remaining), remaining));
+        else
+            Log.e("Alarm screen", "Pills remaining are <= 0");
+
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

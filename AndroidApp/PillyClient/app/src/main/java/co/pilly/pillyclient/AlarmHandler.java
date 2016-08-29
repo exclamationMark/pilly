@@ -16,6 +16,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.WindowManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AlarmHandler extends IntentService {
 
@@ -39,22 +43,58 @@ public class AlarmHandler extends IntentService {
         ArrayList<PillAlert> aList = Schedule.getSavedAlerts(getSharedPreferences(getResources().getString(R.string.preferences_file_key), Context.MODE_PRIVATE));
 
         String deviceResponse = "";
+        JSONArray uncheckedEvents = null;
         try {
             ConnectivityManager connectivityManager =
                     (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                deviceResponse = fetchURL("http://192.168.1.4:5000/mustissuewarning/123");
+                deviceResponse = fetchURL("http://127.0.0.1:5000/getRecentUnchecked/123");
+                uncheckedEvents = new JSONArray(deviceResponse);
             } else {
                 Log.d("AlarmManager", "No connection available");
             }
         }
-        catch (IOException e) {
+        catch (IOException|JSONException e) {
             e.printStackTrace();
-            Log.d("AlarmHandler", "IOException caught");
         }
 
-        if(deviceResponse.equals("1")) {
+        if (uncheckedEvents != null) {
+            if (uncheckedEvents.length() == 0) {
+                issueAlarm(pillAlert, pillAlert.getQuantity());
+            }
+            else if (uncheckedEvents.length() == 1) {
+                try {
+                    int pillDelta = uncheckedEvents.getJSONObject(0).getInt("pillDelta");
+                    if (pillDelta > 0) {
+                        deviceResponse = fetchURL("http://127.0.0.1:5000/setEventChecked/123/1/" + 0);
+                        if (!deviceResponse.contains("ok")) {
+                            Log.e("AlarmHandler", "Error while checking event.");
+                        }
+                        issueAlarm(pillAlert, pillAlert.getQuantity());
+                    } else if (-pillDelta == pillAlert.getQuantity()) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        calendar.set(Calendar.HOUR_OF_DAY, pillAlert.getHours());
+                        calendar.set(Calendar.MINUTE, pillAlert.getMinutes());
+                        calendar.set(Calendar.SECOND, 0);
+                        long currentTimeMillis = System.currentTimeMillis();
+                        long lastTriggerMillis = calendar.getTimeInMillis();
+                        int minutes = ((int)(currentTimeMillis - lastTriggerMillis)) / 1000 / 60;
+                        deviceResponse = fetchURL("http://127.0.0.1:5000/setEventChecked/123/1/" + minutes);
+                        if (!deviceResponse.contains("ok")) {
+                            Log.e("AlarmHandler", "Error while checking event.");
+                        }
+                    } else if () {
+
+                    }
+                }
+                catch (IOException|JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        /*{
             Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
             alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
             alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -68,7 +108,15 @@ public class AlarmHandler extends IntentService {
             Log.d("AlarmManager", "Next alarm set");
         } else {
             Log.e("AlarmManager", "Unknown device response");
-        }
+        }*/
+    }
+
+    private void issueAlarm(PillAlert pillAlert, int remaining) {
+        Intent alarmIntent = new Intent(getApplicationContext(), AlarmScreen.class);
+        alarmIntent.putExtra(Schedule.EXTRA_PILLALERT, pillAlert);
+        alarmIntent.putExtra(Schedule.EXTRA_REMAINING, remaining);
+        alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(alarmIntent);
     }
 
     private String fetchURL(String destination) throws IOException {

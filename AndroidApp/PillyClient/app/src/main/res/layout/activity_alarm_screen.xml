@@ -22,25 +22,26 @@
         android:textSize="35pt" />
 
     <TextView
-        android:id="@+id/label_pills_to_take"
+        android:id="@+id/alarm_pillnr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/pilly_alarm_label"
         android:layout_centerHorizontal="true"
-        android:text="@string/pills_to_take"
-        android:textColor="@color/light"
-        android:textSize="14pt" />
-
-    <TextView
-        android:id="@+id/alarm_pillnr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/label_pills_to_take"
-        android:layout_centerHorizontal="true"
-        android:textSize="42pt"
         android:text=""
         android:textColor="@color/light"
-        android:layout_marginTop="16pt"/>
+        android:textSize="16pt"
+        android:layout_marginTop="12pt" />
+
+    <TextView
+        android:id="@+id/alarm_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alarm_pillnr"
+        android:layout_centerHorizontal="true"
+        android:textSize="12pt"
+        android:text=""
+        android:textColor="@color/light"
+        android:layout_marginTop="8pt"/>
 
     <Button
         android:layout_width="match_parent"

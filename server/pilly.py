@@ -10,15 +10,13 @@ pillies = {}
 configFileName = 'serverConfig.json'
 class Pilly(object):
 	global pillies
-	
-	pid = 0 # Maybe not necessary
-	description = "Dad's heart pills"
-	pillCount = 0 # Also maybe not necessary
-	pillWeight = 1
-	history = []
 
 	def __init__(self, pid):
 		self.pid = pid
+		self.description = "Dad's heart pills"
+		self.pillWeight = 1
+		self.pillCount = 0
+		self.history = []
 		self.readFile()
 		pillies[pid] = self
 
@@ -52,7 +50,7 @@ class Pilly(object):
 		response['description'] = self.description
 		response['pillCount'] = self.pillCount
 		response['status'] = "ok"
-		response['recent'] = [['4 hours ago', 'taken on time'],['yesterday 20:14', 'taken on time'],['yestarday 10:38', 'taken 2h late'],['2 days ago 20:08', 'taken on time'],['2 days ago 08:02', 'taken on time']]
+		response['recent'] = self.history[-5:]
 		return response
 
 	def notifyCaretaker(self):
@@ -63,9 +61,24 @@ class Pilly(object):
 		self.pillCount = pillCount
 		if diff != 0:
 			event = {}
-			event["time"] = time.time()
+			event["time"] = long(time.time())
 			event["pillDelta"] = diff
+			event["pillCount"] = self.pillCount
+			event["minutesFromSchedule"] = ""
 			self.history.append(event)
+		self.saveFile()
+
+	def getRecentEvents(self, eventCount):
+		return self.history[-int(eventCount):]
+
+	def getRecentUnchecked(self):
+		i = 1
+		while self.history[-i]["minutesFromSchedule"] == "" and i < len(self.history):
+			i += 1
+		return self.history[-i+1:]
+
+	def setEventChecked(self, eventId, minutesFromSchedule):
+		self.history[-eventId]["minutesFromSchedule"] = minutesFromSchedule
 		self.saveFile()
 
 @app.route('/status/<pid>')
@@ -78,6 +91,24 @@ def updatePillCount(pid, pillCount):
 	p = Pilly.get(pid)
 	p.setPillCount(int(pillCount))
 	return json.dumps({'response':'ok'})
+
+@app.route('/getRecentEvents/<pid>/<eventCount>')
+def retrieveEvents(pid, eventCount):
+	p = Pilly.get(pid)
+	response = p.getRecentEvents(eventCount)
+	return json.dumps(response)
+
+@app.route('/getRecentUnchecked/<pid>')
+def retrieveUnchecked(pid):
+	p = Pilly.get(pid)
+	response = p.getRecentUnchecked()
+	return json.dumps(response)
+
+@app.route('/setEventChecked/<pid>/<eventId>/<minutesFromSchedule>')
+def setEventChecked(pid, eventId, minutesFromSchedule):
+	p = Pilly.get(pid)
+	p.setEventChecked(int(eventId), int(minutesFromSchedule))
+	return json.dumps({'response' : 'ok'})
 
 if __name__ == "__main__":
 	try:

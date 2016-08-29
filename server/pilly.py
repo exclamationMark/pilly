@@ -72,7 +72,7 @@ class Pilly(object):
 		return self.history[-int(eventCount):]
 
 	def getRecentUnchecked(self):
-		if self.history[-1]["minutesFromSchedule"] != "N/D"
+		if self.history[-1]["minutesFromSchedule"] != "N/D":
 			return []
 		i = 1
 		while self.history[-i]["minutesFromSchedule"] == "N/D" and i < len(self.history):

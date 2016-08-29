@@ -44,8 +44,8 @@ public class AlarmScreen extends AppCompatActivity {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_info_outline_black_24dp)
-                        .setContentTitle("Take your pills!")
-                        .setContentText(pillAlert.getQuantity() + " of them.")
+                        .setContentTitle(getResources().getString(R.string.notification_title))
+                        .setContentText(String.format(getResources().getString(R.string.notification_content), remaining))
                         .setAutoCancel(true);
         Intent resultIntent = new Intent(this, Status.class);
         PendingIntent resultPendingIntent =

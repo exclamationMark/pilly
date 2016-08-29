@@ -94,11 +94,12 @@ public class AlarmHandler extends IntentService {
                 try {
                     int totalDelta = 0;
                     for(int i = 0; i < uncheckedEvents.length(); i++)
-                        totalDelta += uncheckedEvents.getJSONObject(i).getInt("pillDelta");
+                        if (uncheckedEvents.getJSONObject(i).getInt("pillDelta") < 0)
+                            totalDelta += uncheckedEvents.getJSONObject(i).getInt("pillDelta");
                     if (-totalDelta == pillAlert.getQuantity()) {
-                        Log.d("AlarmHandler", "User took the correct nr o pills in multiple sittings. Scheduling next alarm...");
+                        Log.d("AlarmHandler", "User took the correct nr of pills in multiple sittings. Scheduling next alarm...");
                         for(int i = 0; i < uncheckedEvents.length(); i++)
-                            setEventChecked(pillAlert, i);
+                            setEventChecked(pillAlert, i + 1);
                         scheduleNextAlarm(aList);
                     } else if (-totalDelta > pillAlert.getQuantity()) {
                         Log.d("AlarmHandler", "Multiple overdoses! OH MY GAWD!");

@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class StatusFragment extends Fragment {
     @Override
@@ -64,25 +65,25 @@ public class StatusFragment extends Fragment {
 
             JSONArray recent = jsonObject.getJSONArray("recent");
 
-            if (recent.length() > 0) {
-                Date1.setText(String.valueOf(recent.getJSONObject(0).getString("time")));
-                Event1.setText(String.valueOf(recent.getJSONObject(0).getString("pillDelta")));
+            if (recent.length() > 0) { // TODO: Make recent event human readable
+                Date1.setText(formatTimestamp(recent.getJSONObject(0).getLong("time")));
+                Event1.setText(formatPillDelta(recent.getJSONObject(0).getInt("pillDelta")));
             }
             if (recent.length() > 1) {
-                Date2.setText(String.valueOf(recent.getJSONObject(1).getString("time")));
-                Event2.setText(String.valueOf(recent.getJSONObject(1).getString("pillDelta")));
+                Date2.setText(formatTimestamp(recent.getJSONObject(1).getLong("time")));
+                Event2.setText(formatPillDelta(recent.getJSONObject(1).getInt("pillDelta")));
             }
             if (recent.length() > 2) {
-                Date3.setText(String.valueOf(recent.getJSONObject(2).getString("time")));
-                Event3.setText(String.valueOf(recent.getJSONObject(2).getString("pillDelta")));
+                Date3.setText(formatTimestamp(recent.getJSONObject(2).getLong("time")));
+                Event3.setText(formatPillDelta(recent.getJSONObject(2).getInt("pillDelta")));
             }
             if (recent.length() > 3) {
-                Date4.setText(String.valueOf(recent.getJSONObject(3).getString("time")));
-                Event4.setText(String.valueOf(recent.getJSONObject(3).getString("pillDelta")));
+                Date4.setText(formatTimestamp(recent.getJSONObject(3).getLong("time")));
+                Event4.setText(formatPillDelta(recent.getJSONObject(3).getInt("pillDelta")));
             }
             if (recent.length() > 4) {
-                Date5.setText(String.valueOf(recent.getJSONObject(4).getString("time")));
-                Event5.setText(String.valueOf(recent.getJSONObject(4).getString("pillDelta")));
+                Date5.setText(formatTimestamp(recent.getJSONObject(4).getLong("time")));
+                Event5.setText(formatPillDelta(recent.getJSONObject(4).getInt("pillDelta")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -93,6 +94,49 @@ public class StatusFragment extends Fragment {
 
     public void setArguments(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public static String formatTimestamp(long timeInSeconds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Calendar toFormat = Calendar.getInstance();
+        toFormat.setTimeInMillis(timeInSeconds*1000);
+        Calendar todaysMidnight = Calendar.getInstance();
+        todaysMidnight.setTimeInMillis(System.currentTimeMillis());
+        todaysMidnight.set(Calendar.HOUR_OF_DAY, 0);
+        todaysMidnight.set(Calendar.MINUTE, 0);
+        todaysMidnight.set(Calendar.SECOND, 0);
+        long midnightMillis = todaysMidnight.getTimeInMillis();
+        long toFormatMillis = toFormat.getTimeInMillis();
+        if (toFormatMillis > midnightMillis) {
+            stringBuilder.append("Today, ");
+        } else if (toFormatMillis > midnightMillis - 24 * 60 * 60 * 1000) {
+            stringBuilder.append("Yesterday, ");
+        } else {
+            stringBuilder.append(toFormat.get(Calendar.YEAR));
+            stringBuilder.append("/");
+            stringBuilder.append(toFormat.get(Calendar.MONTH));
+            stringBuilder.append("/");
+            stringBuilder.append(toFormat.get(Calendar.DAY_OF_MONTH));
+            stringBuilder.append(", ");
+        }
+        stringBuilder.append(NewAlert.formatTime(toFormat.get(Calendar.HOUR_OF_DAY), toFormat.get(Calendar.MINUTE)));
+
+        return stringBuilder.toString();
+    }
+
+    public static String formatPillDelta(int pillDelta) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (pillDelta < 0) {
+            stringBuilder.append("Took ");
+        } else {
+            stringBuilder.append("Loaded ");
+        }
+        stringBuilder.append(Math.abs(pillDelta));
+        stringBuilder.append(" pill");
+        if (Math.abs(pillDelta) != 1)
+            stringBuilder.append("s");
+
+        return stringBuilder.toString();
     }
 
     JSONObject jsonObject;

@@ -64,16 +64,26 @@ public class StatusFragment extends Fragment {
 
             JSONArray recent = jsonObject.getJSONArray("recent");
 
-            Date1.setText(recent.getJSONArray(0).getString(0));
-            Date2.setText(recent.getJSONArray(1).getString(0));
-            Date3.setText(recent.getJSONArray(2).getString(0));
-            Date4.setText(recent.getJSONArray(3).getString(0));
-            Date5.setText(recent.getJSONArray(4).getString(0));
-            Event1.setText(recent.getJSONArray(0).getString(1));
-            Event2.setText(recent.getJSONArray(1).getString(1));
-            Event3.setText(recent.getJSONArray(2).getString(1));
-            Event4.setText(recent.getJSONArray(3).getString(1));
-            Event5.setText(recent.getJSONArray(4).getString(1));
+            if (recent.length() > 0) {
+                Date1.setText(String.valueOf(recent.getJSONObject(0).getString("time")));
+                Event1.setText(String.valueOf(recent.getJSONObject(0).getString("pillDelta")));
+            }
+            if (recent.length() > 1) {
+                Date2.setText(String.valueOf(recent.getJSONObject(1).getString("time")));
+                Event2.setText(String.valueOf(recent.getJSONObject(1).getString("pillDelta")));
+            }
+            if (recent.length() > 2) {
+                Date3.setText(String.valueOf(recent.getJSONObject(2).getString("time")));
+                Event3.setText(String.valueOf(recent.getJSONObject(2).getString("pillDelta")));
+            }
+            if (recent.length() > 3) {
+                Date4.setText(String.valueOf(recent.getJSONObject(3).getString("time")));
+                Event4.setText(String.valueOf(recent.getJSONObject(3).getString("pillDelta")));
+            }
+            if (recent.length() > 4) {
+                Date5.setText(String.valueOf(recent.getJSONObject(4).getString("time")));
+                Event5.setText(String.valueOf(recent.getJSONObject(4).getString("pillDelta")));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

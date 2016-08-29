@@ -16,6 +16,6 @@ if __name__ == '__main__':
 			found = True
 			break
 		if "ast-due" in line:
-			break0
+			break
 	if not found:
 		print "  Alarm not set"

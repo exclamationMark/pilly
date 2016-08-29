@@ -77,7 +77,7 @@ class Pilly(object):
 		i = 1
 		while self.history[-i]["minutesFromSchedule"] == "N/D" and i < len(self.history):
 			i += 1
-		return self.history[-i:]
+		return self.history[-i+1:]
 
 	def setEventChecked(self, eventId, minutesFromSchedule):
 		self.history[-eventId]["minutesFromSchedule"] = minutesFromSchedule

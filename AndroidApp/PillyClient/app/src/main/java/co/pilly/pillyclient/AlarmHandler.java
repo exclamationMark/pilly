@@ -61,6 +61,7 @@ public class AlarmHandler extends IntentService {
 
         if (uncheckedEvents != null) {
             if (uncheckedEvents.length() == 0) {
+                Log.d("AlarmHandler", "No unchecked events, issuing alarm...");
                 issueAlarm(pillAlert, pillAlert.getQuantity());
             }
             else if (uncheckedEvents.length() == 1) {
@@ -71,14 +72,18 @@ public class AlarmHandler extends IntentService {
                         if (!deviceResponse.contains("ok")) {
                             Log.e("AlarmHandler", "Error while checking event.");
                         }
+                        Log.d("AlarmHandler", "Positive delta in the only unchecked event. Issuing alarm...");
                         issueAlarm(pillAlert, pillAlert.getQuantity());
                     } else if (-pillDelta == pillAlert.getQuantity()) {
+                        Log.d("AlarmHandler", "User took pills. Scheduling next alarm...");
                         setEventChecked(pillAlert, 1);
                         scheduleNextAlarm(aList);
                     } else if (-pillDelta > pillAlert.getQuantity()) {
+                        Log.d("AlarmHandler", "The user overdosed. DO SOMETHING FOR GOD'S SAKE!");
                         // Jimmy OD'd and died
                     }
                     else {
+                        Log.d("AlarmHandler", "User didn't take enough pills. Issuing alarm...");
                         issueAlarm(pillAlert, pillAlert.getQuantity() + pillDelta);
                     }
                 }
@@ -91,11 +96,15 @@ public class AlarmHandler extends IntentService {
                     for(int i = 0; i < uncheckedEvents.length(); i++)
                         totalDelta += uncheckedEvents.getJSONObject(i).getInt("pillDelta");
                     if (-totalDelta == pillAlert.getQuantity()) {
+                        Log.d("AlarmHandler", "User took the correct nr o pills in multiple sittings. Scheduling next alarm...");
                         for(int i = 0; i < uncheckedEvents.length(); i++)
                             setEventChecked(pillAlert, i);
+                        scheduleNextAlarm(aList);
                     } else if (-totalDelta > pillAlert.getQuantity()) {
+                        Log.d("AlarmHandler", "Multiple overdoses! OH MY GAWD!");
                         // Jimmy OD'd and died
                     } else {
+                        Log.d("AlarmHandler", "Still not enough pills, Carl.");
                         issueAlarm(pillAlert, pillAlert.getQuantity() + totalDelta);
                     }
                 } catch (JSONException e) {

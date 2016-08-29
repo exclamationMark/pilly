@@ -52,7 +52,8 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://130.237.3.216:5000/status/123");
+            jessicaFetcher = new JessicaFetcher();
+            jessicaFetcher.execute("http://130.237.3.216:5000/status/123");
         }
         else {
             Log.d("Status", "WARNING: No connection available");
@@ -60,6 +61,12 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new NetErrorFragment()).commit();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        jessicaFetcher.cancel(true);
     }
 
     @Override
@@ -177,4 +184,5 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
     }
 
     TextView netErrorLabel;
+    JessicaFetcher jessicaFetcher;
 }

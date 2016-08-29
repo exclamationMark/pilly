@@ -22,26 +22,31 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Login">
+        <activity android:name=".Login"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Status" />
-        <activity android:name=".Schedule">
+        <activity android:name=".Status"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Schedule"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Status" />
         </activity>
-        <activity android:name=".NewAlert" />
+        <activity android:name=".NewAlert"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".AlarmHandler"
             android:exported="false" />
 
-        <activity android:name=".AlarmScreen" />
+        <activity android:name=".AlarmScreen"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/element_layout">
+
+    <TextView
+        android:id="@+id/timestamp_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text=""
+        android:textSize="11pt"
+        android:layout_marginStart="6pt"
+        android:layout_centerVertical="true"
+        android:textColor="@color/darkest"/>
+
+    <TextView
+        android:id="@+id/pillDelta_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="6pt"
+        android:layout_marginBottom="14pt"
+        android:text=""
+        android:textSize="10pt"
+        android:textColor="@color/darkest"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="6pt"
+        android:textColor="@color/darkest"
+        android:id="@+id/minutesFromSchedule_label"
+        android:text=""
+        android:textSize="8pt"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8pt"/>
+</RelativeLayout>

@@ -1,8 +1,6 @@
 package co.pilly.pillyclient;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -11,11 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TableLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
-public class Status extends AppCompatActivity implements View.OnClickListener {
+public class AllEvents extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +33,9 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_status);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        myToolbar.setTitle(getResources().getString(R.string.status));
+        myToolbar.setTitle(getResources().getString(R.string.all_events));
         setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState != null)
@@ -53,7 +50,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             jessicaFetcher = new JessicaFetcher();
-            jessicaFetcher.execute("http://130.237.3.216:5000/status/123");
+            jessicaFetcher.execute("http://130.237.3.216:5000/getRecentEvents/123/0");
         }
         else {
             Log.d("Status", "WARNING: No connection available");
@@ -70,31 +67,23 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_status, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_all_events:
-                onEventClick(findViewById(R.id.table_recent_events));
-                return true;
-            case R.id.menu_schedule:
-                Intent scheduleIntent = new Intent(this, Schedule.class);
-                startActivity(scheduleIntent);
-                return true;
-            default:
-                return false;
+    public void onClick(View view) {
+        ConnectivityManager connectivityManager =   // Start fetching user data
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new JessicaFetcher().execute("http://130.237.3.216:5000/getRecentEvents/123/0");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new LoadingFragment()).commit();
+        }
+        else {
+            Log.d("AllEvents", "WARNING: No connection available");
+            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void onEventClick(View view) {
-        //Toast.makeText(this, "Please implement this", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, AllEvents.class);
-        startActivity(intent);
+    public void setNetErrorLabel(TextView label) {
+        label.setOnClickListener(this);
     }
 
     private class JessicaFetcher extends AsyncTask<String, Void, String> {
@@ -102,8 +91,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
         protected String doInBackground(String... urls) {
             try {
                 return fetchURL(urls[0]);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 Log.d("JessicaFetcher", "Caught IOException");
                 getSupportFragmentManager().beginTransaction()
@@ -114,25 +102,23 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            if(result.equals("Error")) {
+            if (result.equals("Error")) {
                 Log.d("JessicaFetcher", "ERROR: Could not create JSONObject");
-            }
-            else {
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    StatusFragment statusFragment = new StatusFragment();
-                    statusFragment.setArguments(jsonObject);
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, statusFragment);
-                    fragmentTransaction.commit();
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } else {
+                AllEventsFragment allEventsFragment = new AllEventsFragment();
+                String[] events = result.substring(1, result.length() - 1).split("(?<=\\}),\\s");
+                eList = new ArrayList<>();
+                for (String event : events)
+                    eList.add(PillyEvent.fromString(event));
+                eventListAdapter = new EventListAdapter(getApplicationContext(), R.layout.event_list_element, eList);
+                allEventsFragment.setArgs(eventListAdapter);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, allEventsFragment);
+                fragmentTransaction.commit();
             }
         }
 
-        private String fetchURL(String destination) throws IOException{
+        private String fetchURL(String destination) throws IOException {
             InputStream is = null;
 
             try {
@@ -155,8 +141,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
                     i = is.read();
                 }
                 return bo.toString();
-            }
-            finally {
+            } finally {
                 if (is != null) {
                     is.close();
                 }
@@ -164,27 +149,7 @@ public class Status extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    public void setNetErrorLabel(TextView netErrorLabel) {
-        this.netErrorLabel = netErrorLabel;
-        this.netErrorLabel.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        ConnectivityManager connectivityManager =   // Start fetching user data
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://130.237.3.216:5000/getinfo/123");
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new LoadingFragment()).commit();
-        }
-        else {
-            Log.d("Status", "WARNING: No connection available");
-            Toast.makeText(this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    TextView netErrorLabel;
+    ArrayList<PillyEvent> eList;
+    EventListAdapter eventListAdapter;
     JessicaFetcher jessicaFetcher;
 }

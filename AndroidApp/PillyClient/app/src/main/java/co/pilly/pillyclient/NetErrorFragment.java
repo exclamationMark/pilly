@@ -2,6 +2,7 @@ package co.pilly.pillyclient;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,11 @@ public class NetErrorFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ( (Status)getActivity()).setNetErrorLabel(label);
+        FragmentActivity activity = getActivity();
+        if (activity instanceof Status)
+            ( (Status)activity).setNetErrorLabel(label);
+        else if (activity instanceof AllEvents)
+            ( (AllEvents)activity).setNetErrorLabel(label);
     }
 
     TextView label;

@@ -52,8 +52,14 @@
         <activity
             android:name=".AlarmScreen"
             android:screenOrientation="portrait" />
-        <activity android:name=".OverdoseDetected"
+        <activity
+            android:name=".OverdoseDetected"
             android:screenOrientation="portrait" />
+        <activity android:name=".AllEvents">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Status" />
+        </activity>
     </application>
 
 </manifest>

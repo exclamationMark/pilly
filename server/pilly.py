@@ -118,7 +118,7 @@ def setEventChecked(pid, eventId, minutesFromSchedule):
 
 @app.route('/getPillWeight')
 def getPillWeight():
-	return 6.7
+	return "6.7"
 
 if __name__ == "__main__":
 	try:

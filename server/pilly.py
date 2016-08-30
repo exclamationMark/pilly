@@ -116,6 +116,10 @@ def setEventChecked(pid, eventId, minutesFromSchedule):
 	p.setEventChecked(int(eventId), int(minutesFromSchedule))
 	return json.dumps({'response' : 'ok'})
 
+@app.route('/getPillWeight')
+def getPillWeight():
+	return 6.7
+
 if __name__ == "__main__":
 	try:
 		with open (configFileName, 'r') as configFile:

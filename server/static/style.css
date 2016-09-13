@@ -90,6 +90,14 @@ li a#active {
 	font-weight: 100;
 }
 
+.pillnumber_tens {
+
+}
+
+.pillnumber_units {
+	
+}
+
 .table {
 	border-collapse: collapse;
 	font-size: 40pt;

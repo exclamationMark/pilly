@@ -1,0 +1,50 @@
+html {
+	font-family: 'Roboto', sans-serif;
+	background-color: #F7FFFF;
+	font-weight: 300;
+}
+
+.label1 {
+	font-size: 36pt;
+	color: #054444;
+	text-align: center;
+	padding: 70pt 0 20pt 0;
+}
+
+.label2 {
+	font-size: 30pt;
+	color: #054444;
+	text-align: center;
+	margin-top: 100pt;
+	padding: 20pt 0 70pt 0;
+}
+
+.pillnumber_tens {
+	font-size: 56pt;
+	color: #054444;
+	display: inline-block;
+	width: 49%;
+	text-align: right;
+	font-weight: 100;
+	position: absolute;
+	top: 150pt;
+	padding-right: 1pt;
+}
+
+.pillnumber_units {
+	font-size: 56pt;
+	color: #054444;
+	display: inline-block;
+	width: 49%;
+	text-align: left;
+	position: absolute;
+	font-weight: 100;
+	top: 150pt;
+	left: 50%;
+	padding-left: 1pt;
+}
+
+.pillnumber_container {
+	margin-top: 16pt;
+	margin-bottom: 16pt;
+}

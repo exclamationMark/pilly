@@ -49,7 +49,7 @@ public class AlarmHandler extends IntentService {
                     (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                deviceResponse = fetchURL("http://130.237.3.216:5000/getRecentUnchecked/123");
+                deviceResponse = fetchURL("http://130.237.3.216:5000/getRecentUnchecked/101");
                 uncheckedEvents = new JSONArray(deviceResponse);
             } else {
                 Log.d("AlarmManager", "No connection available");
@@ -68,7 +68,7 @@ public class AlarmHandler extends IntentService {
                 try {
                     int pillDelta = uncheckedEvents.getJSONObject(0).getInt("pillDelta");
                     if (pillDelta > 0) {
-                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + 0);
+                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/101/1/" + 0);
                         if (!deviceResponse.contains("ok")) {
                             Log.e("AlarmHandler", "Error while checking event.");
                         }
@@ -80,7 +80,7 @@ public class AlarmHandler extends IntentService {
                         scheduleNextAlarm(aList);
                     } else if (-pillDelta > pillAlert.getQuantity()) {
                         Log.d("AlarmHandler", "The user overdosed. DO SOMETHING FOR GOD'S SAKE!");
-                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/1/" + 0);
+                        deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/101/1/" + 0);
                         if (!deviceResponse.contains("ok")) {
                             Log.e("AlarmHandler", "Error while checking event.");
                         }
@@ -156,7 +156,7 @@ public class AlarmHandler extends IntentService {
             long currentTimeMillis = System.currentTimeMillis();
             long lastTriggerMillis = calendar.getTimeInMillis();
             int minutes = ((int) (currentTimeMillis - lastTriggerMillis)) / 1000 / 60;
-            deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/123/" + eventId + "/" + minutes);
+            deviceResponse = fetchURL("http://130.237.3.216:5000/setEventChecked/101/" + eventId + "/" + minutes);
             if (!deviceResponse.contains("ok")) {
                 Log.e("AlarmHandler", "Error while checking event.");
             }

@@ -52,16 +52,16 @@ public class StatusFragment extends Fragment {
                 NextPillTime.setText(getResources().getString(R.string.no_next_pill));
             }
 
-            TextView Date1 = (TextView) mView.findViewById(R.id.timestamp1);
-            TextView Date2 = (TextView) mView.findViewById(R.id.timestamp2);
+            TextView Date5 = (TextView) mView.findViewById(R.id.timestamp1);
+            TextView Date4 = (TextView) mView.findViewById(R.id.timestamp2);
             TextView Date3 = (TextView) mView.findViewById(R.id.timestamp3);
-            TextView Date4 = (TextView) mView.findViewById(R.id.timestamp4);
-            TextView Date5 = (TextView) mView.findViewById(R.id.timestamp5);
-            TextView Event1 = (TextView) mView.findViewById(R.id.event1);
-            TextView Event2 = (TextView) mView.findViewById(R.id.event2);
+            TextView Date2 = (TextView) mView.findViewById(R.id.timestamp4);
+            TextView Date1 = (TextView) mView.findViewById(R.id.timestamp5);
+            TextView Event5 = (TextView) mView.findViewById(R.id.event1);
+            TextView Event4 = (TextView) mView.findViewById(R.id.event2);
             TextView Event3 = (TextView) mView.findViewById(R.id.event3);
-            TextView Event4 = (TextView) mView.findViewById(R.id.event4);
-            TextView Event5 = (TextView) mView.findViewById(R.id.event5);
+            TextView Event2 = (TextView) mView.findViewById(R.id.event4);
+            TextView Event1 = (TextView) mView.findViewById(R.id.event5);
 
             JSONArray recent = jsonObject.getJSONArray("recent");
 

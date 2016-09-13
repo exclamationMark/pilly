@@ -50,7 +50,7 @@ public class AllEvents extends AppCompatActivity implements View.OnClickListener
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             jessicaFetcher = new JessicaFetcher();
-            jessicaFetcher.execute("http://130.237.3.216:5000/getRecentEvents/123/0");
+            jessicaFetcher.execute("http://130.237.3.216:5000/getRecentEvents/101/0");
         }
         else {
             Log.d("Status", "WARNING: No connection available");
@@ -72,7 +72,7 @@ public class AllEvents extends AppCompatActivity implements View.OnClickListener
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new JessicaFetcher().execute("http://130.237.3.216:5000/getRecentEvents/123/0");
+            new JessicaFetcher().execute("http://130.237.3.216:5000/getRecentEvents/101/0");
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new LoadingFragment()).commit();
         }

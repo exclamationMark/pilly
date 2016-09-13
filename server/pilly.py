@@ -120,6 +120,10 @@ def setEventChecked(pid, eventId, minutesFromSchedule):
 def getPillWeight():
 	return "6.7"
 
+@app.route('/candyCounter')
+def candyCounter():
+	return render_template('candy_count.html')
+
 if __name__ == "__main__":
 	try:
 		with open (configFileName, 'r') as configFile:

@@ -1,73 +1,65 @@
 $(document).ready(function() {
-	/*setInterval (function() {
-		$.getJSON("http://127.0.0.1:5000/candyCounter/updates", function(result) {
-			// Do something
+	setInterval (function() {
+		$.getJSON("http://127.0.0.1:5000/getRecentUnchecked/42", function(result) {
+			if (result.length > 0) {
+				pillcountGoTo(result[result.length - 1].pillCount);
+				handleNewEvents(result);
+				$.getJSON("http://127.0.0.1:5000/setEventChecked/42/1/1", function(response) {});
+			}
 		});
-	}, 2000);*/
+	}, 2000);
 });
 
-function addOneUnit(animDuration) {
-	var units = parseInt($('.pillnumber_units').text()) + 1;
-	if (units > 9)
-		units = 0;
+function goToUnitFromBottom(units, animDuration) {
 	var destination = $('.pillnumber_units').offset();
 	var newElement = $('<div class="pillnumber_units"></div>')
-					.text(units).css({top : destination.top + 110,
-									left : destination.left,
-									opacity : '0'});
+	.text(units).css({top : destination.top + 110,
+		left : destination.left,
+		opacity : '0'});
 	$('.pillnumber_units').after(newElement);
 	$('.pillnumber_units').first().animate({top : '-=60pt', opacity : '0'}, {queue : false, duration : animDuration});
 	newElement.animate({top : '-=110', opacity : '1'}, {queue : false,
-														duration : animDuration,
-														complete : removeFirstUnit});
+		duration : animDuration,
+		complete : removeFirstUnit});
 }
 
-function subtractOneUnit(animDuration) {
-	var units = parseInt($('.pillnumber_units').text()) - 1;
-	if (units < 0)
-		units = 9;
+function goToUnitFromTop(units, animDuration) {
 	var destination = $('.pillnumber_units').offset();
 	var newElement = $('<div class="pillnumber_units"></div>')
-					.text(units).css({top : destination.top - 60,
-									left : destination.left,
-									opacity : '0'});
+	.text(units).css({top : destination.top - 60,
+		left : destination.left,
+		opacity : '0'});
 	$('.pillnumber_units').after(newElement);
 	$('.pillnumber_units').first().animate({top : '+=110pt', opacity : '0'}, {queue : false, duration : animDuration});
 	newElement.animate({top : '+=60', opacity : '1'}, {queue : false,
-														duration : animDuration,
-														complete : removeFirstUnit});
+		duration : animDuration,
+		complete : removeFirstUnit});
 }
 
-function addOneTen(animDuration) {
-	var tens = parseInt($('.pillnumber_tens').text()) + 1;
-	if (tens > 9)
-		tens = 0;
+function goToTenFromBottom(tens, animDuration) {
 	var destination = $('.pillnumber_tens').offset();
 	var newElement = $('<div class="pillnumber_tens"></div>')
-					.text(tens).css({top : destination.top + 110,
-									left : destination.left,
-									opacity : '0'});
+	.text(tens).css({top : destination.top + 110,
+		left : destination.left,
+		opacity : '0'});
 	$('.pillnumber_tens').after(newElement);
 	$('.pillnumber_tens').first().animate({top : '-=60pt', opacity : '0'}, {queue : false, duration : animDuration});
 	newElement.animate({top : '-=110', opacity : '1'}, {queue : false,
-														duration : animDuration,
-														complete : removeFirstTen});
+		duration : animDuration,
+		complete : removeFirstTen});
 }
 
-function subtractOneTen(animDuration) {
-	var tens = parseInt($('.pillnumber_tens').text()) - 1;
-	if (tens < 0)
-		tens = 9;
+function goToTenFromTop(tens, animDuration) {
 	var destination = $('.pillnumber_tens').offset();
 	var newElement = $('<div class="pillnumber_tens"></div>')
-					.text(tens).css({top : destination.top - 60,
-									left : destination.left,
-									opacity : '0'});
+	.text(tens).css({top : destination.top - 60,
+		left : destination.left,
+		opacity : '0'});
 	$('.pillnumber_tens').after(newElement);
 	$('.pillnumber_tens').first().animate({top : '+=110pt', opacity : '0'}, {queue : false, duration : animDuration});
 	newElement.animate({top : '+=60', opacity : '1'}, {queue : false,
-														duration : animDuration,
-														complete : removeFirstTen});
+		duration : animDuration,
+		complete : removeFirstTen});
 }
 
 function removeFirstUnit() {
@@ -78,20 +70,72 @@ function removeFirstTen() {
 	$('.pillnumber_tens').first().remove();
 }
 
-function addOne() {
-	var units = parseInt($('.pillnumber_units').text());
-	addOneUnit(200);
-	if (units == 9)
-		addOneTen(200);
+function addEvent(time, event) {
+	var elem = $('<div/>', {'class' : 'history_row'}).append(
+			$('<div/>', {'class' : 'history_time', text : time})
+			).append(
+			$('<div/>', {'class' : 'history_event', text : event})
+			);
+	if ($('.history_row').first().css('background-color') != 'rgb(161, 186, 186)')
+		elem.css({'background-color' : 'rgb(161, 186, 186)'});
+	elem.css({display : 'none'});
+	$('.history_title').after(elem);
+	elem.slideDown();
 }
 
-function subtractOne() {
+function pillcountGoTo(n) {
 	var units = parseInt($('.pillnumber_units').text());
-	subtractOneUnit(200);
-	if (units == 0)
-		subtractOneTen(200);
+	var tens = parseInt($('.pillnumber_tens').text());
+	var current = units + tens * 10;
+	if (n > current) {
+		// Animation from top
+		if (n%10 != current%10)
+			goToUnitFromTop(n%10, 400);
+		if (Math.floor(n/10) != Math.floor(current/10))
+			goToTenFromTop(Math.floor(n/10), 400);
+	} else {
+		// Animation from bottom
+		if (n%10 != current%10)
+			goToUnitFromBottom(n%10, 400);
+		if (Math.floor(n/10) != Math.floor(current/10))
+			goToTenFromBottom(Math.floor(n/10), 400);
+	}
 }
 
-$(document).click(function() {
-  subtractOne();
-});
+function handleNewEvents(eventList) {
+	for (var i = 0; i < eventList.length; i++) {
+		addEvent(formatTime(eventList[i].time), formatPillDelta(eventList[i].pillDelta));
+	}
+}
+
+function formatTime(time) {
+	var d = new Date(time*1000);
+	var hours = d.getHours();
+	var minutes = d.getMinutes();
+	var result = "";
+	if(hours < 10)
+		result = "0" + hours;
+	else
+		result = result + hours;
+	if (minutes < 10) 
+		result = result + ":0" + minutes;
+	else
+		result = result + ":" + minutes;
+
+	return result;
+}
+
+function formatPillDelta(pillDelta) {
+	var result = "";
+	if (pillDelta < 0)
+		result = "Taken " + (-pillDelta);
+	else
+		result = "Loaded " + pillDelta;
+	result = result + " pill";
+	if (pillDelta == 1 || pillDelta == -1)
+		result = result + ".";
+	else
+		result = result + "s.";
+
+	return result;
+}

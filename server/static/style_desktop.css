@@ -23,7 +23,7 @@ html {
 	font-size: 56pt;
 	color: #054444;
 	display: inline-block;
-	width: 49%;
+	width: 34%;
 	text-align: right;
 	font-weight: 100;
 	position: absolute;
@@ -35,16 +35,54 @@ html {
 	font-size: 56pt;
 	color: #054444;
 	display: inline-block;
-	width: 49%;
+	width: 34%;
 	text-align: left;
 	position: absolute;
 	font-weight: 100;
 	top: 150pt;
-	left: 50%;
+	left: 35%;
 	padding-left: 1pt;
 }
 
-.pillnumber_container {
-	margin-top: 16pt;
-	margin-bottom: 16pt;
+.pillcount_section {
+	width: 69%;
+	display: inline-block;
+}
+
+.history_section {
+	width: 29%;
+	display: inline-block;
+	position: absolute;
+	left: 70%;
+	top: 0;
+	overflow: scroll;
+	height: 100%;
+}
+
+.history_row {
+	font-size: 16pt;
+	text-align: center;
+	color: #054444;
+	padding: 4pt;
+}
+
+.history_time {
+	text-align: left;
+	display: inline-block;
+	width: 49%;
+}
+
+.history_event {
+	text-align: right;
+	display: inline-block;
+	width: 49%;
+}
+
+.history_title {
+	font-size: 24pt;
+	color: #054444;
+	text-align: center;
+	position: relative;
+	top: 0;
+	padding: 10pt 0 12pt 0;
 }

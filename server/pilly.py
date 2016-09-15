@@ -21,7 +21,7 @@ class Pilly(object):
 		event["time"] = long(time.time())
 		event["pillDelta"] = 0
 		event["pillCount"] = 0
-		event["minutesFromSchedule"] = "N/D"
+		event["minutesFromSchedule"] = 0
 		self.history.append(event)
 		self.readFile()
 		pillies[pid] = self

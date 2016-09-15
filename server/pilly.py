@@ -18,6 +18,7 @@ class Pilly(object):
 		self.pillCount = 0
 		self.history = []
 		event = {}
+		event["id"] = 0
 		event["time"] = long(time.time())
 		event["pillDelta"] = 0
 		event["pillCount"] = 0
@@ -67,6 +68,7 @@ class Pilly(object):
 		self.pillCount = pillCount
 		if diff != 0:
 			event = {}
+			event["id"] = self.history[-1]["id"]+1
 			event["time"] = long(time.time())
 			event["pillDelta"] = diff
 			event["pillCount"] = self.pillCount
@@ -76,6 +78,14 @@ class Pilly(object):
 
 	def getRecentEvents(self, eventCount):
 		return self.history[-int(eventCount):]
+
+	def getEventsFrom(self, eventID):
+		if self.history[-1]["id"] == eventID:
+			return []
+		i = 1
+		while self.history[-i]["id"] > eventID and i < len(self.history):
+			i += 1
+		return self.history[-i+1:]
 
 	def getRecentUnchecked(self):
 		if self.history[-1]["minutesFromSchedule"] != "N/D":
@@ -108,6 +118,12 @@ def updatePillCount(pid, pillCount):
 def retrieveEvents(pid, eventCount):
 	p = Pilly.get(pid)
 	response = p.getRecentEvents(eventCount)
+	return json.dumps(response)
+
+@app.route('/getEventsFrom/<pid>/<eventID>')
+def retrieveEventsFrom(pid, eventID):
+	p = Pilly.get(pid)
+	response = p.getEventsFrom(eventID)
 	return json.dumps(response)
 
 @app.route('/getRecentUnchecked/<pid>')

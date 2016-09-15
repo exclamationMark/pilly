@@ -123,7 +123,7 @@ def retrieveEvents(pid, eventCount):
 @app.route('/getEventsFrom/<pid>/<eventID>')
 def retrieveEventsFrom(pid, eventID):
 	p = Pilly.get(pid)
-	response = p.getEventsFrom(eventID)
+	response = p.getEventsFrom(int(eventID))
 	return json.dumps(response)
 
 @app.route('/getRecentUnchecked/<pid>')

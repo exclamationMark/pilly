@@ -2,7 +2,7 @@ var event_id_counter = 0;
 
 $(document).ready(function() {
 	setInterval (function() {
-		$.getJSON("http://127.0.0.1:5000/getEventsFrom/42/" + event_id_counter, function(result) {
+		$.getJSON("http://130.237.3.216:5000/getEventsFrom/42/" + event_id_counter, function(result) {
 			if (result.length > 0) {
 				pillcountGoTo(result[result.length - 1].pillCount);
 				event_id_counter = result[result.length - 1].id;
